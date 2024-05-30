@@ -1,0 +1,11 @@
+@startuml
+autoactivate on
+FE -> BE : POST /models
+alt model not in memory
+BE -> HuggingFace: Download models
+return
+BE -> NLP: Save models
+return
+end
+return
+@enduml

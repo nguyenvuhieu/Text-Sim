@@ -1,0 +1,13 @@
+@startuml
+autoactivate on
+FE -> BE : score
+BE -> NLP: Get model
+return
+BE -> NLTK: tokenizer
+return
+BE -> NLP: encode to vector
+return
+BE -> NLP: scoring
+return
+return
+@enduml

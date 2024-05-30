@@ -1,0 +1,7 @@
+@startuml
+autoactivate on
+FE -> BE : DELETE /dataset/data
+BE -> DB : Delete data
+return
+return
+@enduml

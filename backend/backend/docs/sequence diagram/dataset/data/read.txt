@@ -1,0 +1,7 @@
+@startuml
+autoactivate on
+FE -> BE : GET /dataset/data
+BE -> DB : Query data
+return
+return
+@enduml

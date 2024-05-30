@@ -1,0 +1,7 @@
+@startuml
+autoactivate on
+FE -> BE : POST /dataset/data
+BE -> DB : Insert data into dataset
+return
+return
+@enduml
