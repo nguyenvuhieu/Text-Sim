@@ -1,0 +1,12 @@
+{
+  "titlePage": "Dữ liệu - TextSim",
+  "result": "Kết quả",
+  "placeholderText": "Nhập văn bản ở đây...",
+  "textError1": "Máy chủ đang khởi động. Vui lòng thử lại sau!",
+  "textError2": "Có sự cố gì đó đang xảy ra!",
+  "overscore": "Độ tương đồng tổng quát",
+  "compare": "Một số câu có độ tương đồng cao",
+  "placeholderText-1": "Nhập câu ở đây...",
+  "score": "Độ tương đồng",
+  "text": "Văn bản"
+}

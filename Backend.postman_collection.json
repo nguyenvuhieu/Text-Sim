@@ -1,0 +1,281 @@
+{
+	"info": {
+		"_postman_id": "5a393fba-9517-45b1-9ef5-8854c6bc792a",
+		"name": "Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19808080"
+	},
+	"item": [
+		{
+			"name": "Load model",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"model_name\": \"all-MiniLM-L6-v2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/load-model",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"load-model"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Load model",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"model_name\": \"all-MiniLM-L6-v2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/load-model",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"load-model"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.0.2 Python/3.12.2"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 03 Apr 2024 17:03:28 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "18"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Score 1-1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"model_name\": \"all-MiniLM-L6-v2\",\n    \"first\": \"Hello. My name is An.\",\n    \"second\": \"Good bye. See you later.\",\n    \"top_k\": 3\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/compare/one-one",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"compare",
+						"one-one"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Score 1-1",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"model_name\": \"all-MiniLM-L6-v2\",\n    \"first\": \"Hello. My name is An.\",\n    \"second\": \"Good bye. See you later.\",\n    \"top_k\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/compare/one-one",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"compare",
+								"one-one"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.0.2 Python/3.12.2"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 09 Apr 2024 15:49:38 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "304"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"pairs\": [\n        {\n            \"first\": 0,\n            \"score\": 0.3786378502845764,\n            \"second\": 0\n        },\n        {\n            \"first\": 0,\n            \"score\": 0.36452698707580566,\n            \"second\": 1\n        },\n        {\n            \"first\": 1,\n            \"score\": 0.2741423547267914,\n            \"second\": 1\n        }\n    ],\n    \"score\": 0.4595501124858856\n}"
+				}
+			]
+		},
+		{
+			"name": "Score n",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"model_name\": \"all-MiniLM-L6-v2\",\n    \"top_k\": 10,\n    \"sentences\": [\n        \"The cat sits outside\",\n    \"A man is playing guitar\",\n    \"I love pasta\",\n    \"The new movie is awesome\",\n    \"The cat plays in the garden\",\n    \"A woman watches TV\",\n    \"The new movie is so great\",\n    \"Do you like pizza?\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/score/many",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"score",
+						"many"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Score n",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"model_name\": \"all-MiniLM-L6-v2\",\n    \"top_k\": 10,\n    \"document\": \"The cat sits outside. A man is playing guitar. I love pasta. The new movie is awesome. The cat plays in the garden. A woman watches TV. The new movie is so great. Do you like pizza?\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/compare/many",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"compare",
+								"many"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Werkzeug/3.0.2 Python/3.12.2"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 09 Apr 2024 15:52:18 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "865"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"pairs\": [\n        {\n            \"first\": 3,\n            \"score\": 0.9007472395896912,\n            \"second\": 6\n        },\n        {\n            \"first\": 0,\n            \"score\": 0.6750156879425049,\n            \"second\": 4\n        },\n        {\n            \"first\": 2,\n            \"score\": 0.5051915645599365,\n            \"second\": 7\n        },\n        {\n            \"first\": 2,\n            \"score\": 0.2436775118112564,\n            \"second\": 6\n        },\n        {\n            \"first\": 2,\n            \"score\": 0.23204223811626434,\n            \"second\": 3\n        },\n        {\n            \"first\": 1,\n            \"score\": 0.21494291722774506,\n            \"second\": 4\n        },\n        {\n            \"first\": 3,\n            \"score\": 0.1922830045223236,\n            \"second\": 7\n        },\n        {\n            \"first\": 6,\n            \"score\": 0.17203465104103088,\n            \"second\": 7\n        },\n        {\n            \"first\": 0,\n            \"score\": 0.12993277609348297,\n            \"second\": 5\n        },\n        {\n            \"first\": 4,\n            \"score\": 0.08836723864078522,\n            \"second\": 7\n        }\n    ]\n}"
+				}
+			]
+		}
+	]
+}

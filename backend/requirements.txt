@@ -1,0 +1,7 @@
+sentence-transformers>=2.6.1,<2.7.0  # https://www.SBERT.net
+Flask>=3.0.2,<3.1.0  # https://github.com/pallets/flask/
+tensorflow>=2.16.1,<2.17.0  # https://www.tensorflow.org/
+numpy>=1.26.4,<1.27.0  # https://github.com/numpy/numpy
+nltk>=3.8.1,<3.9.0  # https://github.com/nltk/nltk
+torch>=2.2.2,<2.3.0  # https://pytorch.org/
+ssl>=1.16,<1.17.0  # https://github.com/pypa/ssl

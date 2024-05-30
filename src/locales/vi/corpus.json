@@ -1,0 +1,11 @@
+{
+  "titlePage": "Kho ngữ liệu - TextSim",
+  "result": "Kết quả",
+  "placeholderText": "Nhập văn bản ở đây...",
+
+  "overscore": "Độ tương đồng tổng quát",
+  "compare": "Một số câu có độ tương đồng cao",
+  "placeholderText-1": "Nhập câu ở đây...",
+  "score": "Độ tương đồng",
+  "text": "Văn bản"
+}

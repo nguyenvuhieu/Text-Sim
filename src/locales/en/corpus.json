@@ -1,0 +1,10 @@
+{
+  "titlePage": "Corpus - TextSim",
+  "result": "Result",
+  "placeholderText": "Type text here...",
+  "overscore": "Overall similarity score",
+  "compare": "A few sentences with high similarity",
+  "placeholderText-1": "Type sentences here...",
+  "score": "Score ",
+  "text": "Text"
+}

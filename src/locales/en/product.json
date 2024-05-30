@@ -1,0 +1,12 @@
+{
+  "titlePage": "Product - TextSim",
+  "result": "Result",
+  "placeholderText": "Type text here...",
+  "textError1": "Server is starting. Please try again later!",
+  "textError2": "Something went wrong!",
+  "overscore": "Overall similarity score",
+  "compare": "A few sentences with high similarity",
+  "placeholderText-1": "Type sentences here...",
+  "score": "Score ",
+  "text": "Text"
+}

@@ -1,0 +1,117 @@
+.table-container {
+  margin: 20px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.data-table th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.score-column {
+  width: 80px; /* Điều chỉnh kích thước của cột Score */
+}
+
+.task-buttons {
+  display: flex;
+  gap: 10px; /* Tạo khoảng cách giữa các nút bấm */
+}
+
+.action-button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.action-button:hover {
+  background-color: #0056b3;
+}
+
+.task-buttons button:hover {
+  background-color: #ccc;
+}
+.table-container {
+  max-height: 400px; /* Chiều cao tối đa của khung */
+  overflow-y: auto; /* Tạo thanh cuộn dọc khi cần */
+}
+
+.table-wrapper {
+  width: 100%; /* Khung bảng sẽ có chiều rộng 100% */
+}
+
+.data-table {
+  width: 100%; /* Bảng sẽ có chiều rộng 100% */
+  border-collapse: collapse; /* Gộp các đường viền của ô */
+}
+
+.data-table th,
+.data-table td {
+  padding: 8px; /* Khoảng cách nội dung từ viền */
+  border: 1px solid #ddd; /* Đường viền cho các ô */
+}
+
+.score-column {
+  width: 80px; /* Độ rộng cố định cho cột điểm số */
+}
+
+.task-buttons button {
+  margin-right: 4px; /* Khoảng cách giữa các nút */
+}
+.editing-row {
+  background-color: #f0f8ff; /* Màu nền của hàng đang chỉnh sửa */
+}
+
+/* Đảm bảo rằng các textbox chỉnh sửa có độ rộng ngang bằng với ô chứa văn bản ban đầu */
+.input-field {
+  width: calc(100% - 16px); /* Độ rộng của các textbox là 100% trừ đi khoảng cách padding */
+}
+
+.search-container {
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.search-bar input[type="text"] {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  flex: 1;
+}
+
+.search-bar .search-button {
+  padding: 8px 16px;
+  font-size: 16px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.search-bar .search-button:hover {
+  background-color: #0056b3;
+}
