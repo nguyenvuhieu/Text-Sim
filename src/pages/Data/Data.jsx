@@ -33,9 +33,16 @@ const Data = () => {
   const [newGroupName, setNewGroupName] = useState("");
   const [newGroupScoreType, setNewGroupScoreType] = useState("");
   const [isChangeButtonVisible, setIsChangeButtonVisible] = useState(false);
+
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    fetchDataSet(); // Gọi fetchDataSet ngay khi selectedDataGroup thay đổi
+    setShowTable(true); // Luôn hiển thị bảng dữ liệu
+  }, [selectedDataGroup]);
+
   const fetchData = async () => {
     try {
       const { data } = await axios.get(`${HOST}/dataset`);
@@ -315,7 +322,7 @@ const Data = () => {
           onChange={handleDataGroupChange}
           className="block w-1/8 px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 rounded-lg focus:ring-0"
         >
-          <option value="">-- Chọn nhóm --</option>
+          {!selectedDataGroup.id && <option value={null}>--Chọn nhóm--</option>}
           {datagroups.map((group) => (
             <option key={group._id} value={group._id}>
               {group.name}
@@ -404,19 +411,6 @@ const Data = () => {
         </button>
         <button onClick={handleExportData} className="px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600">
           Xuất file dữ liệu
-        </button>
-      </div>
-
-      {/* Button to fetch data */}
-      <div className="flex items-center justify-center">
-        <button
-          onClick={async () => {
-            await fetchDataSet(); // Đợi fetchDataSet hoàn thành
-            setShowTable(true);
-          }}
-          className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-        >
-          Hiển thị kho dữ liệu
         </button>
       </div>
       {showTable && (

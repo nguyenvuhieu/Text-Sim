@@ -2,17 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import logo from "../../assets/images/logo.png";
 import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
 import "./Corpus.css";
 import { useTranslation } from "react-i18next";
-
-const MAXIMUM_NUMBER_OF_CHARACTERS = 1000;
 
 const Corpus = () => {
   const { t } = useTranslation("corpus");
 
   // States
   const [documentGroups, setDocumentGroups] = useState([]);
-  const [selectedDocGroup, setSelectedDocGroup] = useState(null);
+  const [selectedDocGroup, setSelectedDocGroup] = useState({});
   const [documents, setDocuments] = useState([]);
   const [editIndex, setEditIndex] = useState(-1);
   const [editTitle, setEditTitle] = useState("");
@@ -30,10 +29,24 @@ const Corpus = () => {
   const [isPopUpDeleteDoc, setIsPopUpDeleteDoc] = useState(false);
   const [newGroupName, setNewGroupName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [showFullContent, setShowFullContent] = useState(false);
+  const [showContentPopup, setShowContentPopup] = useState(false);
+  const [popupDocument, setPopupDocument] = useState(null);
 
   useEffect(() => {
-    fetchDocumentGroups();
+    try {
+      fetchDocumentGroups();
+    } catch (error) {
+      console.error("Error fetching document groups:", error);
+      setSelectedDocGroup(null); // Đặt selectedDocGroup thành null khi có lỗi
+      setErrorMessage("Lỗi khi tải danh sách nhóm tài liệu.");
+    }
   }, []);
+
+  useEffect(() => {
+    fetchDocuments(); // Gọi fetchDataSet ngay khi selectedDataGroup thay đổi
+    setShowTable(true); // Luôn hiển thị bảng dữ liệu
+  }, [selectedDocGroup]);
 
   // Fetch document groups
   const fetchDocumentGroups = async () => {
@@ -45,15 +58,20 @@ const Corpus = () => {
     }
   };
 
-  // Fetch documents within the selected group
   const fetchDocuments = async () => {
     try {
-      if (selectedDocGroup) {
+      if (selectedDocGroup && selectedDocGroup.id) {
+        // Check if selectedDocGroup is not null
         const response = await axios.get(
           `http://127.0.0.1:8000/corpus/${selectedDocGroup.id}/documents?skip=0&limit=10`
         );
-        setDocuments(response.data.documents);
-        setShowTable(true); // Hiển thị bảng sau khi fetch
+        if (response.data && response.data.documents) {
+          setDocuments(response.data.documents);
+          setShowTable(true); // Hiển thị bảng sau khi fetch
+        } else {
+          console.error("Invalid response data:", response.data);
+          setErrorMessage("Dữ liệu phản hồi không hợp lệ.");
+        }
       } else {
         setShowTable(false); // Ẩn bảng nếu không có nhóm nào được chọn
       }
@@ -81,12 +99,6 @@ const Corpus = () => {
     setErrorMessage("");
   };
 
-  const handleOpenEditPopup = (index) => {
-    setEditIndex(index);
-    setEditTitle(documentGroups[index].name); // Giả sử documentGroups có trường name
-    setIsPopUpEditGroup(true);
-  };
-
   const handleCloseEditPopup = () => {
     setEditIndex(-1);
     setEditTitle("");
@@ -104,7 +116,7 @@ const Corpus = () => {
     setIsPopUpDeleteGroup(false);
   };
   // PopUpDochandlers
-  const handleOpenAddPopUpDoc = () => setIsPopUpAddDoc(true);
+
   const handleCloseAddPopUpDoc = () => {
     setIsPopUpAddDoc(false);
     setNewTitle("");
@@ -115,7 +127,7 @@ const Corpus = () => {
   const handleOpenEditPopUpDoc = (index) => {
     setEditIndex(index);
     setEditTitle(documents[index].title);
-    setEditContent(documents[index].content);
+    setEditContent(formatCorpusText(documents[index].text));
     setIsPopUpEditDoc(true);
   };
 
@@ -135,6 +147,18 @@ const Corpus = () => {
   const handleCloseDeletePopUpDoc = () => {
     setEditIndex(-1);
     setIsPopUpDeleteDoc(false);
+  };
+
+  // Hàm mở popup hiển thị nội dung
+  const handleOpenContentPopup = (document) => {
+    setPopupDocument(document);
+    setShowContentPopup(true);
+  };
+
+  // Hàm đóng popup hiển thị nội dung
+  const handleCloseContentPopup = () => {
+    setShowContentPopup(false);
+    setPopupDocument(null);
   };
 
   // ... (các hàm API) ...
@@ -254,6 +278,7 @@ const Corpus = () => {
     try {
       const response = await axios.get(`http://127.0.0.1:8000/corpus/${selectedDocGroup.id}/documents`);
       const documents = response.data.documents;
+      alert("toi day r");
 
       // Tạo tiêu đề cho file CSV với encoding UTF-8
       const csvHeader = "\uFEFFTitle,Content\n";
@@ -261,11 +286,12 @@ const Corpus = () => {
       let csvContent = "";
 
       documents.forEach((doc) => {
-        const { title, content } = doc;
+        const { title } = doc;
+        const content = formatCorpusText(doc.text);
         // Bao quanh giá trị của mỗi trường trong dấu ngoặc kép và sử dụng dấu phẩy làm phân tách
         csvContent += `"${title.replace(/"/g, '""')}","${content.replace(/"/g, '""')}"\n`;
       });
-
+      alert("co vao ko");
       // Tạo nội dung hoàn chỉnh của file CSV bằng cách kết hợp tiêu đề và nội dung
       const csv = csvHeader + csvContent;
 
@@ -291,12 +317,34 @@ const Corpus = () => {
     }
   };
 
+  function formatCorpusText(text, maxSentences = null) {
+    let output = [];
+    let currentParagraphIndex = 0;
+
+    for (let index = 0; index < text.sentences.length; index++) {
+      if (text.paragraph_index[currentParagraphIndex] && !text.paragraph_index[currentParagraphIndex].includes(index)) {
+        output.push("\n\n");
+        currentParagraphIndex++;
+      }
+
+      output.push(text.sentences[index]);
+
+      // Nếu maxSentences được chỉ định và đã đạt đến giới hạn, dừng lại
+      if (maxSentences && output.length >= maxSentences) {
+        break;
+      }
+    }
+
+    return output.join(" ");
+  }
+
   return (
-    <div className="max-w-[1200px] mx-auto my-16 min-h-[800px]">
+    <div className="max-w-[1000px] mx-auto my-16 min-h-[800px]">
       <Helmet>
         <title>{t("titlePage")}</title>
-        <meta name="description" content="Trang quản lý tài liệu" />
+        <meta name="description" content="Trang quản lý Corpus" />
       </Helmet>
+
       <div className="p-8">
         <div className="flex items-center justify-center">
           <img src={logo} className="h-20 mr-6" alt="TextSim Logo" />
@@ -304,129 +352,113 @@ const Corpus = () => {
         </div>
       </div>
 
-      {/* Dropdown chọn nhóm tài liệu */}
+      {/* Chọn Nhóm Tài Liệu */}
       <div className="flex items-center justify-center mb-4">
         <div className="text-left pr-4">
           <p className="text-gray-600">Chọn nhóm tài liệu:</p>
         </div>
+
         <select
-          value={selectedDocGroup ? selectedDocGroup.id : ""}
+          value={selectedDocGroup.id}
           onChange={handleDocGroupChange}
           className="block w-1/8 px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 rounded-lg focus:ring-0"
         >
-          <option value="">-- Chọn nhóm --</option>
+          {!selectedDocGroup.id && <option value={null}>--Chọn nhóm--</option>}
           {documentGroups.map((group) => (
             <option key={group._id} value={group._id}>
               {group.name}
             </option>
           ))}
         </select>
-
-        {/* Nút Thêm nhóm, Xóa nhóm, Sửa nhóm */}
+        {/* Nút Thêm Nhóm Tài Liệu */}
         <button
           onClick={handleOpenAddPopup}
           className="px-4 py-2 ml-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
         >
-          Thêm nhóm
+          Thêm Nhóm
         </button>
-        {selectedDocGroup && (
-          <>
-            <button
-              onClick={() =>
-                handleOpenEditPopup(documentGroups.findIndex((group) => group._id === selectedDocGroup.id))
-              }
-              className="px-4 py-2 ml-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-            >
-              Sửa nhóm
-            </button>
-            <button
-              onClick={() =>
-                handleOpenDeletePopup(documentGroups.findIndex((group) => group._id === selectedDocGroup.id))
-              }
-              className="px-4 py-2 ml-4 text-white bg-red-500 rounded-lg hover:bg-red-600"
-            >
-              Xóa nhóm
-            </button>
-          </>
+
+        {/* Nút Xóa Nhóm Tài Liệu (chỉ hiển thị khi có nhóm được chọn) */}
+        {selectedDocGroup?.id && ( // Kiểm tra selectedDocGroup.id trước khi truy cập
+          <button
+            onClick={() =>
+              handleOpenDeletePopup(documentGroups.findIndex((group) => group._id === selectedDocGroup.id))
+            }
+            className="px-4 py-2 ml-4 text-white bg-red-500 rounded-lg hover:bg-red-600"
+          >
+            Xóa Nhóm
+          </button>
         )}
-      </div>
-      <div className="flex items-center justify-center mb-4">
+
+        {/* Nút Thêm Tài Liệu (chỉ hiển thị khi có nhóm được chọn) */}
+        {selectedDocGroup?.id && ( // Kiểm tra selectedDocGroup.id trước khi truy cập
+          <button
+            onClick={() => setIsPopUpAddDoc(true)}
+            className="px-4 py-2 ml-4 text-white bg-green-500 rounded-lg hover:bg-green-600"
+          >
+            Thêm Tài Liệu
+          </button>
+        )}
+
+        {/* Nút Xuất File Dữ Liệu */}
         <button
-          onClick={fetchDocuments} // Gọi hàm để lấy dữ liệu và hiển thị bảng
-          className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+          onClick={handleExportData}
+          className="px-4 py-2 ml-4 text-white bg-purple-500 rounded-lg hover:bg-purple-600"
         >
-          Hiển thị kho ngữ liệu
+          Xuất file dữ liệu{" "}
         </button>
       </div>
-      {/* Hiển thị bảng chỉ khi showTable là true và đã chọn nhóm tài liệu */}
-      {showTable && selectedDocGroup && (
-        <>
-          {/* Bảng danh sách tài liệu */}
+
+      {showTable && (
+        <div>
+          <h2>Danh Sách Tài Liệu:</h2>
           <div className="table-container">
-            <h2>Danh sách tài liệu nhóm {selectedDocGroup?.name}</h2>
-            <div className="table-wrapper">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th className="title-column w-1/6">Tiêu đề</th>
-                    <th className="content-column w-4/6">Nội dung</th>
-                    <th className="task-header w-1/6">Tác vụ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {documents.map((doc, index) => (
-                    <tr key={index} className={editIndex === index ? "editing-row" : ""}>
-                      <td>
-                        {editIndex === index ? (
-                          <input
-                            className="input-field"
-                            value={editTitle}
-                            onChange={(e) => setEditTitle(e.target.value)}
-                          />
-                        ) : (
-                          doc.title
-                        )}
-                      </td>
-                      <td>
-                        {editIndex === index ? (
-                          <textarea
-                            className="input-field"
-                            value={editContent}
-                            onChange={(e) => setEditContent(e.target.value)}
-                          ></textarea>
-                        ) : (
-                          doc.content
-                        )}
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th className="title-column">Tiêu đề</th>
+                  <th className="content-column">Nội dung</th>
+                  <th className="task-header">Tác vụ</th>
+                </tr>
+              </thead>
+              <tbody>
+                {documents.map((document, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>{document.title}</td>
+                      <td className="content-cell">
+                        <div className="content-scroll">
+                          {document.text.sentences.length < 6 ? (
+                            <p>{formatCorpusText(document.text)}</p>
+                          ) : (
+                            <>
+                              <p>{formatCorpusText(document.text, 5)}...</p>
+                              {document.text.sentences.length > 5 && (
+                                <button className="toggle-button" onClick={() => handleOpenContentPopup(document)}>
+                                  Xem thêm
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
                       </td>
                       <td className="task-buttons">
-                        {editIndex === index ? (
-                          <>
-                            <button className="action-button" onClick={() => handleUpdateDocument(index)}>
-                              Lưu
-                            </button>
-                            <button className="action-button" onClick={() => setEditIndex(-1)}>
-                              Hủy
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button className="action-button" onClick={() => handleOpenEditPopUpDoc(index)}>
-                              Cập nhật
-                            </button>
-                            <button className="action-button" onClick={() => handleOpenDeletePopUpDoc(index)}>
-                              Xóa
-                            </button>
-                          </>
-                        )}
+                        <button className="action-button" onClick={() => handleOpenEditPopUpDoc(index)}>
+                          Chỉnh sửa
+                        </button>
+                        <button className="action-button" onClick={() => handleOpenDeletePopUpDoc(index)}>
+                          Xóa
+                        </button>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
-        </>
+        </div>
       )}
+
       {/* Popup thêm nhóm tài liệu */}
       {isPopUpAddGroup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
@@ -626,6 +658,30 @@ const Corpus = () => {
                 className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
               >
                 Xóa
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Popup hiển thị nội dung */}
+      {showContentPopup && popupDocument && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="w-full max-w-lg p-8 bg-white rounded-lg">
+            <h2 className="mb-4 text-2xl font-semibold text-center">Nội dung tài liệu: {popupDocument.title}</h2>
+            {/* Ô chứa nội dung (danh sách câu) có thanh cuộn */}
+            <div className="popup-text-container mb-4">
+              <div className="popup-text">
+                {popupDocument.text.sentences.map((sentence, sentenceIndex) => (
+                  <p key={sentenceIndex}>{sentence}</p>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <button
+                onClick={handleCloseContentPopup}
+                className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+              >
+                Đóng
               </button>
             </div>
           </div>

@@ -657,7 +657,6 @@ const Product = () => {
   };
 
   const handleTextSimENG_v3 = async () => {
-    alert(selectedCorpusId);
     try {
       setLoading(true);
 
@@ -744,7 +743,7 @@ const Product = () => {
         highlightedSentences.forEach((pair) => {
           if (index === pair.first_sentence && !sentenceColored) {
             output.push(
-              `<span style="background-color: ${pair.color}; text-decoration: underline " ; title=" ${t("score")}: ${
+              `<span style="background-color: ${pair.color};  cursor: pointer " ; title=" ${t("score")}: ${
                 pair.score
               }" onClick="handleClick(${pair.second_sentence},'${pair.color}', ${pair.score}, 2)">${sentence}</span>`
             );
@@ -768,7 +767,7 @@ const Product = () => {
         highlightedSentences.forEach((pair) => {
           if (index === pair.second_sentence && !sentenceColored) {
             output.push(
-              `<span style="background-color: ${pair.color}; text-decoration: underline " ; title=" ${t("score")}: ${
+              `<span style="background-color: ${pair.color};  cursor: pointer " ; title=" ${t("score")}: ${
                 pair.score
               }" onClick="handleClick(${pair.first_sentence},'${pair.color}', ${pair.score}, 1)">${sentence}</span>`
             );
@@ -852,7 +851,7 @@ const Product = () => {
       highlightedSentences.forEach((pair) => {
         if (coloredIndexes[index] && index === pair.first_sentence) {
           output.push(
-            `<span style="background-color: ${pair.color}" ; title=" ${t("score")}: ${
+            `<span style="background-color: ${pair.color} ;  cursor: pointer"; title= ${t("score")}: ${
               pair.score
             }" onClick="handleClickv2(${pair.first_sentence},'${pair.color}')">${sentence}</span>`
           );
@@ -968,7 +967,7 @@ const Product = () => {
         if (index === pair.first_sentence) {
           // So sánh index với first_sentence của pair
           output.push(
-            `<span style="background-color: ${pair.color}" ; title="${t("score")}: ${
+            `<span style="background-color: ${pair.color}";  cursor: pointer ; title="${t("score")}: ${
               pair.score
             }" onClick="handleClickv3(${pair.first_sentence},'${pair.color}')">${sentence}</span>`
           );
@@ -1450,99 +1449,110 @@ const Product = () => {
     if (mode === "1") {
       const hasPairs = data && data.pairs && data.pairs.length > 0;
 
-      if (!hasPairs) {
+      if (!error && !loading && !hasPairs) {
         // Nếu không có cặp câu tương đồng, hiển thị thông báo
         return (
           <div className="mb-18 items-center justify-center">
-            <p className="mb-3 font-normal text-gray-700">Các văn bản này không tương đồng với nhau.</p>
+            <p className="mb-3 text-xl font-bold text-center text-green-600">
+              Các văn bản này không tương đồng với nhau.
+            </p>
           </div>
         );
       }
-      return (
-        <div className="mb-20 flex justify-center items-center">
-          {loading ? (
-            <div class="loader">
-              <div>
-                <ul>
-                  <li>
-                    <svg fill="currentColor" viewBox="0 0 90 120">
-                      <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                    </svg>
-                  </li>
-                  <li>
-                    <svg fill="currentColor" viewBox="0 0 90 120">
-                      <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                    </svg>
-                  </li>
-                  <li>
-                    <svg fill="currentColor" viewBox="0 0 90 120">
-                      <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                    </svg>
-                  </li>
-                  <li>
-                    <svg fill="currentColor" viewBox="0 0 90 120">
-                      <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                    </svg>
-                  </li>
-                  <li>
-                    <svg fill="currentColor" viewBox="0 0 90 120">
-                      <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                    </svg>
-                  </li>
-                  <li>
-                    <svg fill="currentColor" viewBox="0 0 90 120">
-                      <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                    </svg>
-                  </li>
-                </ul>
-              </div>
-              <span>Loading</span>
-            </div>
-          ) : (
-            <div className="mb-17 flex justify-center items-center">
-              {loading
-                ? null
-                : !clickv1
-                ? null
-                : Gauge((parseFloat(scorev1) * 100).toFixed(0), 0, 100, "Tương đồng", colorv1)}
-            </div>
-          )}
-          {error && <p className="mb-3 font-normal text-red-700">{error}</p>}
 
-          <div className="mb-12 grid grid-cols-2 gap-8">
-            <div>
-              {loading ? null : (
+      return (
+        <div className="mb-20 justify-center items-center">
+          {!error && data && data.similarity !== undefined && (
+            <p className="mb-3 text-xl font-bold text-center text-green-600">
+              Độ tương đồng giữa hai văn bản: {(parseFloat(data.similarity) * 100).toFixed(0)}%
+            </p>
+          )}
+
+          <div className="mb-20 flex justify-center items-center">
+            {loading ? (
+              <div class="loader">
                 <div>
-                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{t("text")} 1</h5>
-                  <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                    <div id="scrollableDiv1" style={{ overflow: "auto", maxHeight: "650px" }}>
-                      <pre
-                        className="mb-3 font-normal text-gray-700 whitespace-pre-wrap"
-                        dangerouslySetInnerHTML={{
-                          __html: highlightSimilarSentences(1)
-                        }}
-                      ></pre>
+                  <ul>
+                    <li>
+                      <svg fill="currentColor" viewBox="0 0 90 120">
+                        <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                      </svg>
+                    </li>
+                    <li>
+                      <svg fill="currentColor" viewBox="0 0 90 120">
+                        <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                      </svg>
+                    </li>
+                    <li>
+                      <svg fill="currentColor" viewBox="0 0 90 120">
+                        <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                      </svg>
+                    </li>
+                    <li>
+                      <svg fill="currentColor" viewBox="0 0 90 120">
+                        <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                      </svg>
+                    </li>
+                    <li>
+                      <svg fill="currentColor" viewBox="0 0 90 120">
+                        <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                      </svg>
+                    </li>
+                    <li>
+                      <svg fill="currentColor" viewBox="0 0 90 120">
+                        <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                      </svg>
+                    </li>
+                  </ul>
+                </div>
+                <span>Loading</span>
+              </div>
+            ) : (
+              <div className="mb-17 flex justify-center items-center">
+                {loading
+                  ? null
+                  : !clickv1
+                  ? null
+                  : Gauge((parseFloat(scorev1) * 100).toFixed(0), 0, 100, "Tương đồng", colorv1)}
+              </div>
+            )}
+            {error && <p className="mb-3 font-normal text-red-700">{error}</p>}
+
+            <div className="mb-12 grid grid-cols-2 gap-8">
+              <div>
+                {loading ? null : (
+                  <div>
+                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{t("text")} 1</h5>
+                    <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                      <div id="scrollableDiv1" style={{ overflow: "auto", maxHeight: "650px" }}>
+                        <pre
+                          className="mb-3 font-normal text-gray-700 whitespace-pre-wrap"
+                          dangerouslySetInnerHTML={{
+                            __html: highlightSimilarSentences(1)
+                          }}
+                        ></pre>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
-            <div>
-              {loading ? null : (
-                <div>
-                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{t("text")} 2</h5>
-                  <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                    <div id="scrollableDiv2" style={{ overflow: "auto", maxHeight: "650px" }}>
-                      <pre
-                        className="mb-3 font-normal text-gray-700 whitespace-pre-wrap"
-                        dangerouslySetInnerHTML={{
-                          __html: highlightSimilarSentences(2)
-                        }}
-                      ></pre>
+                )}
+              </div>
+              <div>
+                {loading ? null : (
+                  <div>
+                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{t("text")} 2</h5>
+                    <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                      <div id="scrollableDiv2" style={{ overflow: "auto", maxHeight: "650px" }}>
+                        <pre
+                          className="mb-3 font-normal text-gray-700 whitespace-pre-wrap"
+                          dangerouslySetInnerHTML={{
+                            __html: highlightSimilarSentences(2)
+                          }}
+                        ></pre>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -1551,136 +1561,151 @@ const Product = () => {
     if (mode === "2") {
       const hasPairs = data_v2 && data_v2.pairs && data_v2.pairs.length > 0;
 
-      if (!hasPairs) {
+      if (!loading && !error && !hasPairs) {
         // Nếu không có cặp câu tương đồng, hiển thị thông báo
         return (
           <div className="mb-18 items-center justify-center">
-            <p className="mb-3 font-normal text-gray-700">Các văn bản này không tương đồng với nhau.</p>
+            <p className="mb-3  text-xl font-bold text-center text-green-600">
+              Các văn bản này không tương đồng với nhau.
+            </p>
           </div>
         );
       }
-      return (
-        <div className="grid grid-cols-6 gap-1 p-1">
-          {/* Phần bên trái */}
-          <div className="col-span-3 p-2">
-            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{t("text")} 1</h5>
-            <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-              {loading ? (
-                <div class="loader">
-                  <div>
-                    <ul>
-                      <li>
-                        <svg fill="currentColor" viewBox="0 0 90 120">
-                          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                        </svg>
-                      </li>
-                      <li>
-                        <svg fill="currentColor" viewBox="0 0 90 120">
-                          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                        </svg>
-                      </li>
-                      <li>
-                        <svg fill="currentColor" viewBox="0 0 90 120">
-                          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                        </svg>
-                      </li>
-                      <li>
-                        <svg fill="currentColor" viewBox="0 0 90 120">
-                          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                        </svg>
-                      </li>
-                      <li>
-                        <svg fill="currentColor" viewBox="0 0 90 120">
-                          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                        </svg>
-                      </li>
-                      <li>
-                        <svg fill="currentColor" viewBox="0 0 90 120">
-                          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                        </svg>
-                      </li>
-                    </ul>
-                  </div>
-                  <span>Loading</span>
-                </div>
-              ) : (
-                <div style={{ overflow: "auto", maxHeight: "800px" }}>
-                  <pre
-                    className="mb-3 font-normal text-gray-700 whitespace-pre-wrap"
-                    dangerouslySetInnerHTML={{
-                      __html: highlightSimilarSentencesv2()
-                    }}
-                  ></pre>
-                </div>
-              )}
+      // Lọc danh sách các file tương đồng
+      if (hasPairs) {
+        const similarFiles = data_v2.many.filter((file, index) => data_v2.similarities[index] > 0);
+        return (
+          <div className="mb-20 justify-center items-center">
+            <div className="border border-gray-300 rounded-lg p-4">
+              <h6 className="mb-2 text-lg font-semibold">
+                Độ tương đồng của văn bản: {(parseFloat(data_v2.similarity) * 100).toFixed(0)}%. Các tài liệu tương
+                đồng:
+              </h6>
+              <ul className="list-disc list-inside">
+                {similarFiles.map((file) => (
+                  <li key={file.fileName}>{file.fileName}</li>
+                ))}
+              </ul>
             </div>
-          </div>
-
-          <div className="col-span-2 p-2">
-            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">Độ tương đồng</h5>
-            <div className="h-70 overflow-y-auto border border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center">
-              {selectedIdx !== null && pairsByFirst[selectedIdx] ? (
-                <div className="w-full">
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: highlightSidePanelv2(
-                        pairsByFirst[selectedIdx].filename,
-                        pairsByFirst[selectedIdx].second_sentence,
-                        pairsByFirst[selectedIdx].color
-                      )
-                    }}
-                  ></div>
-                  <div className="mt-4 flex justify-center">
-                    {Gauge(
-                      (parseFloat(pairsByFirst[selectedIdx].score) * 100).toFixed(0),
-                      0,
-                      100,
-                      "Tương đồng",
-                      pairsByFirst[selectedIdx].color
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div>Vui lòng chọn câu tương đồng muốn hiển thị</div>
-              )}
-            </div>
-          </div>
-
-          {/* Danh sách các câu tương đồng */}
-          <div className="col-span-1 p-2">
-            <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">Danh sách các câu tương đồng</h5>{" "}
-            {/* Giảm kích thước và giảm khoảng cách với phần tiêu đề */}
-            <div className="h-70 overflow-y-auto border border-gray-300 rounded-lg">
-              {pairsByFirst.map((result, index) => (
-                <div key={index}>
-                  {/* Button mở side panel */}
-                  <button
-                    onClick={() => {
-                      handleSelect(index);
-                      highlightSidePanelv2();
-                    }}
-                    className={`flex-shrink-0 flex-grow-0 flex justify-between items-center border border-gray-300 p-4 m-2 rounded-lg shadow-md text-sm ${
-                      selectedIdx === index ? "bg-blue-200" : "hover:bg-gray-100"
-                    }`}
-                    style={{ backgroundColor: result.color, transition: "background-color 0.3s" }}
-                  >
-                    <div>
-                      {" "}
-                      {/* Thêm thẻ div để tạo xuống hàng */}
-                      <h5 className="mb-1 font-bold text-black">{result.filename}</h5>{" "}
-                      {/* Giảm khoảng cách với tiêu đề */}
-                      <p className="mb-1 text-sm text-gray-700">
-                        {t("score")}: {(parseFloat(result.over_score) * 100).toFixed(2)}%
-                      </p>{" "}
-                      {/* Thêm kích thước và giảm khoảng cách */}
+            <div className="grid grid-cols-6 gap-1 p-1">
+              {/* Phần bên trái */}
+              <div className="col-span-3 p-2">
+                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{t("text")} 1</h5>
+                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                  {loading ? (
+                    <div class="loader">
+                      <div>
+                        <ul>
+                          <li>
+                            <svg fill="currentColor" viewBox="0 0 90 120">
+                              <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                            </svg>
+                          </li>
+                          <li>
+                            <svg fill="currentColor" viewBox="0 0 90 120">
+                              <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                            </svg>
+                          </li>
+                          <li>
+                            <svg fill="currentColor" viewBox="0 0 90 120">
+                              <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                            </svg>
+                          </li>
+                          <li>
+                            <svg fill="currentColor" viewBox="0 0 90 120">
+                              <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                            </svg>
+                          </li>
+                          <li>
+                            <svg fill="currentColor" viewBox="0 0 90 120">
+                              <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                            </svg>
+                          </li>
+                          <li>
+                            <svg fill="currentColor" viewBox="0 0 90 120">
+                              <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                            </svg>
+                          </li>
+                        </ul>
+                      </div>
+                      <span>Loading</span>
                     </div>
-                  </button>
+                  ) : (
+                    <div style={{ overflow: "auto", maxHeight: "800px" }}>
+                      <pre
+                        className="mb-3 font-normal text-gray-700 whitespace-pre-wrap"
+                        dangerouslySetInnerHTML={{
+                          __html: highlightSimilarSentencesv2()
+                        }}
+                      ></pre>
+                    </div>
+                  )}
                 </div>
-              ))}
+              </div>
+
+              <div className="col-span-2 p-2">
+                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">Độ tương đồng</h5>
+                <div className="h-70 overflow-y-auto border border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center">
+                  {selectedIdx !== null && pairsByFirst[selectedIdx] ? (
+                    <div className="w-full">
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: highlightSidePanelv2(
+                            pairsByFirst[selectedIdx].filename,
+                            pairsByFirst[selectedIdx].second_sentence,
+                            pairsByFirst[selectedIdx].color
+                          )
+                        }}
+                      ></div>
+                      <div className="mt-4 flex justify-center">
+                        {Gauge(
+                          (parseFloat(pairsByFirst[selectedIdx].score) * 100).toFixed(0),
+                          0,
+                          100,
+                          "Tương đồng",
+                          pairsByFirst[selectedIdx].color
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div>Vui lòng chọn câu tương đồng muốn hiển thị</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Danh sách các câu tương đồng */}
+              <div className="col-span-1 p-2">
+                <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">Danh sách các câu tương đồng</h5>{" "}
+                <div className="h-70 overflow-y-auto border border-gray-300 rounded-lg">
+                  {pairsByFirst.map((result, index) => (
+                    <div key={index}>
+                      {/* Button mở side panel */}
+                      <button
+                        onClick={() => {
+                          handleSelect(index);
+                          highlightSidePanelv2();
+                        }}
+                        className={`flex-shrink-0 flex-grow-0 flex justify-between items-center border border-gray-300 p-4 m-2 rounded-lg shadow-md text-sm ${
+                          selectedIdx === index ? "bg-blue-200" : "hover:bg-gray-100"
+                        }`}
+                        style={{ backgroundColor: result.color, transition: "background-color 0.3s" }}
+                      >
+                        <div>
+                          {" "}
+                          <h5 className="mb-1 font-bold text-black">{result.filename}</h5>{" "}
+                          <p className="mb-1 text-sm text-gray-700">
+                            {t("score")}: {(parseFloat(result.over_score) * 100).toFixed(2)}%
+                          </p>{" "}
+                        </div>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      );
+        );
+      }
     } else {
       const hasPairs =
         data_v3 &&
@@ -1689,121 +1714,141 @@ const Product = () => {
           documentArray.some((document) => document.pairs && document.pairs.length > 0)
         );
 
-      if (!hasPairs) {
+      if (!loading && !error && !hasPairs) {
         // Nếu không có cặp câu tương đồng, hiển thị thông báo
         return (
           <div className="mb-18 items-center justify-center">
-            <p className="mb-3 font-normal text-gray-700">Các văn bản này không tương đồng với nhau.</p>
+            <p className="mb-3 text-xl font-bold text-center text-green-600">
+              Các văn bản này không tương đồng với nhau.
+            </p>
           </div>
         );
       }
-      // Trường hợp mode không phải là 2
       return (
-        <div className="grid grid-cols-6 gap-1 p-1">
-          {/* Phần bên trái (Tương tự case 2) */}
-          <div className="col-span-3 p-2">
-            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{t("text")} 1</h5>
-            <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-              {loading ? (
-                <div class="loader">
-                  <div>
-                    <ul>
-                      <li>
-                        <svg fill="currentColor" viewBox="0 0 90 120">
-                          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                        </svg>
-                      </li>
-                      <li>
-                        <svg fill="currentColor" viewBox="0 0 90 120">
-                          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                        </svg>
-                      </li>
-                      <li>
-                        <svg fill="currentColor" viewBox="0 0 90 120">
-                          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                        </svg>
-                      </li>
-                      <li>
-                        <svg fill="currentColor" viewBox="0 0 90 120">
-                          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                        </svg>
-                      </li>
-                      <li>
-                        <svg fill="currentColor" viewBox="0 0 90 120">
-                          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                        </svg>
-                      </li>
-                      <li>
-                        <svg fill="currentColor" viewBox="0 0 90 120">
-                          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
-                        </svg>
-                      </li>
-                    </ul>
+        <div className="mb-20 justify-center items-center">
+          {!error && !loading && data_v3 && (
+            <div className="border border-gray-300 rounded-lg p-4">
+              <h6 className="mb-2 text-lg font-semibold">
+                Độ tương đồng của văn bản: {(parseFloat(data_v3.similarity) * 100).toFixed(0)}%. Các tài liệu tương
+                đồng:
+              </h6>
+              <ul className="list-disc list-inside">
+                {data_v3.corpus_documents.flat().map(
+                  (
+                    doc // Làm phẳng mảng và duyệt qua từng document
+                  ) => (
+                    <li key={doc.document.title}>{doc.document.title}</li>
+                  )
+                )}
+              </ul>
+            </div>
+          )}
+          <div className="grid grid-cols-6 gap-1 p-1">
+            {/* Phần bên trái (Tương tự case 2) */}
+            <div className="col-span-3 p-2">
+              <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{t("text")} 1</h5>
+              <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                {loading ? (
+                  <div class="loader">
+                    <div>
+                      <ul>
+                        <li>
+                          <svg fill="currentColor" viewBox="0 0 90 120">
+                            <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                          </svg>
+                        </li>
+                        <li>
+                          <svg fill="currentColor" viewBox="0 0 90 120">
+                            <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                          </svg>
+                        </li>
+                        <li>
+                          <svg fill="currentColor" viewBox="0 0 90 120">
+                            <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                          </svg>
+                        </li>
+                        <li>
+                          <svg fill="currentColor" viewBox="0 0 90 120">
+                            <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                          </svg>
+                        </li>
+                        <li>
+                          <svg fill="currentColor" viewBox="0 0 90 120">
+                            <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                          </svg>
+                        </li>
+                        <li>
+                          <svg fill="currentColor" viewBox="0 0 90 120">
+                            <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+                          </svg>
+                        </li>
+                      </ul>
+                    </div>
+                    <span>Loading</span>
                   </div>
-                  <span>Loading</span>
-                </div>
-              ) : (
-                // Hiển thị kết quả sau khi đã xử lý xong
-                <div style={{ overflow: "auto", maxHeight: "800px" }}>
-                  <pre
-                    className="mb-3 font-normal text-gray-700 whitespace-pre-wrap"
-                    dangerouslySetInnerHTML={{
-                      __html: highlightSimilarSentencesv3() // Hàm làm nổi bật câu tương đồng
+                ) : (
+                  // Hiển thị kết quả sau khi đã xử lý xong
+                  <div style={{ overflow: "auto", maxHeight: "800px" }}>
+                    <pre
+                      className="mb-3 font-normal text-gray-700 whitespace-pre-wrap"
+                      dangerouslySetInnerHTML={{
+                        __html: highlightSimilarSentencesv3() // Hàm làm nổi bật câu tương đồng
+                      }}
+                    ></pre>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Phần giữa (Tương tự case 2, nhưng sử dụng dữ liệu từ pairsByFirst_v3) */}
+            <div className="col-span-2 p-2">
+              <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">Độ tương đồng</h5>
+              <div className="h-70 overflow-y-auto border border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center">
+                {selectedIdx_v3 !== null && pairsByFirst_v3[selectedIdx_v3] ? (
+                  <div className="w-full">
+                    <div dangerouslySetInnerHTML={{ __html: highlightSidePanelv3() }}></div>{" "}
+                    {/* Hiển thị nội dung đã được làm nổi bật */}
+                    <div className="mt-4 flex justify-center">
+                      {Gauge(
+                        (parseFloat(pairsByFirst_v3[selectedIdx_v3].score) * 100).toFixed(0),
+                        0,
+                        100,
+                        "Tương đồng",
+                        pairsByFirst_v3[selectedIdx_v3].color
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div>Vui lòng chọn câu tương đồng muốn hiển thị</div>
+                )}
+              </div>
+            </div>
+
+            {/* Phần bên phải (Danh sách các câu tương đồng, tương tự case 2, nhưng sử dụng pairsByFirst_v3) */}
+            <div className="col-span-1 p-2">
+              <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">Danh sách các câu tương đồng</h5>
+              <div className="h-70 overflow-y-auto border border-gray-300 rounded-lg">
+                {pairsByFirst_v3.map((result, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      handleSelect_v3(index);
+                      highlightSidePanelv3();
                     }}
-                  ></pre>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Phần giữa (Tương tự case 2, nhưng sử dụng dữ liệu từ pairsByFirst_v3) */}
-          <div className="col-span-2 p-2">
-            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">Độ tương đồng</h5>
-            <div className="h-70 overflow-y-auto border border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center">
-              {selectedIdx_v3 !== null && pairsByFirst_v3[selectedIdx_v3] ? (
-                <div className="w-full">
-                  <div dangerouslySetInnerHTML={{ __html: highlightSidePanelv3() }}></div>{" "}
-                  {/* Hiển thị nội dung đã được làm nổi bật */}
-                  <div className="mt-4 flex justify-center">
-                    {Gauge(
-                      (parseFloat(pairsByFirst_v3[selectedIdx_v3].score) * 100).toFixed(0),
-                      0,
-                      100,
-                      "Tương đồng",
-                      pairsByFirst_v3[selectedIdx_v3].color
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div>Vui lòng chọn câu tương đồng muốn hiển thị</div>
-              )}
-            </div>
-          </div>
-
-          {/* Phần bên phải (Danh sách các câu tương đồng, tương tự case 2, nhưng sử dụng pairsByFirst_v3) */}
-          <div className="col-span-1 p-2">
-            <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">Danh sách các câu tương đồng</h5>
-            <div className="h-70 overflow-y-auto border border-gray-300 rounded-lg">
-              {pairsByFirst_v3.map((result, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    handleSelect_v3(index);
-                    highlightSidePanelv3();
-                  }}
-                  className={`flex-shrink-0 flex-grow-0 flex justify-between items-center border border-gray-300 p-4 m-2 rounded-lg shadow-md text-sm ${
-                    selectedIdx_v3 === index ? "bg-blue-200" : "hover:bg-gray-100"
-                  }`}
-                  style={{ backgroundColor: result.color, transition: "background-color 0.3s" }}
-                >
-                  <div>
-                    <h5 className="mb-1 font-bold text-black">{result.filename}</h5>
-                    <p className="mb-1 text-sm text-gray-700">
-                      {t("score")}: {(parseFloat(result.over_score) * 100).toFixed(2)}%
-                    </p>
-                  </div>
-                </button>
-              ))}
+                    className={` flex-shrink-0  flex-grow-0 flex justify-between items-center border border-gray-300 p-4 m-2 rounded-lg shadow-md text-sm ${
+                      selectedIdx_v3 === index ? "bg-blue-200" : "hover:bg-gray-100"
+                    }`}
+                    style={{ backgroundColor: result.color, transition: "background-color 0.3s" }}
+                  >
+                    <div>
+                      <h5 className="mb-1 font-bold text-black">{result.filename}</h5>
+                      <p className="mb-1 text-sm text-gray-700">
+                        {t("score")}: {(parseFloat(result.over_score) * 100).toFixed(2)}%
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
