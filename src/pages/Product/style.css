@@ -196,3 +196,8 @@
     transform: rotateY(0deg);
   }
 }
+.similar-sentences-list {
+  /* Thêm class mới cho div chứa danh sách câu */
+  height: 500px; /* hoặc một giá trị chiều cao cố định khác */
+  overflow-y: auto; /* Hiển thị thanh cuộn dọc khi nội dung vượt quá chiều cao */
+}
