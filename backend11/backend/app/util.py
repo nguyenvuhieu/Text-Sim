@@ -7,10 +7,12 @@ from internal import DB
 
 def validate_data_type(t, x):
     match t:
-        case utility.DataType.FLOAT:
-            return isinstance(x, float)
-        case utility.DataType.INT:
-            return isinstance(x, int)
+        case utility.SimilarityType.COS_SIM:
+            return isinstance(x, float) and 0<=x<=1
+        case utility.SimilarityType.BOOL:
+            return isinstance(x, bool)
+        case utility.SimilarityType.LEVEL:
+            return isinstance(x, int) and 1<=x<=5
         case _:
             return False
 

@@ -1,7 +1,7 @@
 from sentence_transformers import util
 from fastapi import APIRouter, Body
 from util import get_text
-from models import compare
+from models import compare, utility, corpus as corpus_model
 from internal import Model
 from config import Config
 from internal import DB
@@ -36,6 +36,23 @@ def one_many(req: compare.OneManyRequest = Body(...)):
 def corpus(req: compare.CorpusRequest = Body(...)):
     model = Model().get_model(req.model)
     text = get_text(req.text)
-    corpus = [DB().mongo[Config().COLLATION_DOCUMENT].find({"corpus_id": corpus_id}) for corpus_id in req.corpus_ids]
-    print(text)
-    print(corpus)
+    corpus = [[corpus_model.Document.model_validate(d) for d in DB().mongo[Config().COLLATION_DOCUMENT].find({"corpus_id": corpus_id})] for corpus_id in req.corpus_ids]
+    e1 = model.encode(text.sentences, convert_to_tensor=True)
+    e2 = [[model.encode(document.text.sentences, convert_to_tensor=True) for document in documents] for documents in corpus]
+    score = [[util.cos_sim(e1, ed) for ed in eds] for eds in e2]
+    s1 = set()
+    corpus_documents = [[]]*len(corpus)
+    nc = len(corpus)
+    for ic in range(nc):
+        for id in range(len(corpus[ic])):
+            s2 = set()
+            pairs = []
+            for i1 in range(len(text.sentences)):
+                for i2 in range(len(corpus[ic][id].text.sentences)):
+                    if score[ic][id][i1][i2] > req.threshold:
+                        s1.add(i1)
+                        s2.add(i2)
+                        pairs.append(compare.Pair(first_sentence=i1, second_sentence=i2, score=score[ic][id][i1][i2]))
+            corpus_documents[ic].append(compare.CorpusDocument(document=corpus[ic][id], similarity=len(s2)/len(corpus[ic][id].text.sentences), pairs=pairs))
+
+    return compare.CorpusResponse(text=text, similarity=len(s1)/len(text.sentences), corpus_documents=corpus_documents)

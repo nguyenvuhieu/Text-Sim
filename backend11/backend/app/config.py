@@ -23,7 +23,7 @@ class Config(metaclass=SingletonMeta):
     MONGODB_URI = "mongodb+srv://nlp:ULLHZrYPBLzBWQpu@nlp.hzuorvm.mongodb.net/?retryWrites=true&w=majority&appName=nlp"
     MONGODB_DB = "nlp"
     
-    COLLATION_CORPUS = "corpus"
-    COLLATION_DOCUMENT = "corpus_document"
-    COLLECTION_DATASET = 'dataset'
-    COLLECTION_DATASET_RECORD = 'dataset_records'
+    COLLATION_CORPUS = "corpus_v2"
+    COLLATION_DOCUMENT = "corpus_document_v2"
+    COLLECTION_DATASET = 'dataset_v2'
+    COLLECTION_DATASET_RECORD = 'dataset_records_v2'

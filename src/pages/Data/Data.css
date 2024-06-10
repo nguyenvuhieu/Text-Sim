@@ -1,25 +1,30 @@
+/* Định dạng bảng */
 .table-container {
-  margin: 20px;
-}
-
-.table-wrapper {
   overflow-x: auto;
+  border-radius: 8px; /* Bo góc */
+  border: 1px solid #ccc; /* Viền đậm hơn (2px) và màu đen */
 }
 
+/* Trong file Corpus.css hoặc trong một thẻ <style> */
 .data-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse; /* Xóa khoảng cách mặc định giữa các ô */
 }
 
 .data-table th,
 .data-table td {
-  border: 1px solid #ddd;
+  border: 1px solid #ddd; /* Viền cho các ô */
   padding: 8px;
 }
 
 .data-table th {
+  background-color: #f2f2f2; /* Màu nền xám cho tiêu đề */
+  font-weight: bold;
+}
+
+/* Hàng chẵn màu xám */
+.data-table tr:nth-child(even) {
   background-color: #f2f2f2;
-  text-align: left;
 }
 
 .score-column {

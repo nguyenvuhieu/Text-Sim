@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet-async";
 import "./Data.css";
 const MAXIMUM_NUMBER_OF_CHARACTERS = 1000;
 const HOST = "http://127.0.0.1:8000";
+const lev_array = [1, 2, 3, 4, 5];
 
 const Data = () => {
   const { t } = useTranslation("data");
@@ -19,7 +20,7 @@ const Data = () => {
   const [editDataIndex, setEditDataIndex] = useState(null);
   const [editFirstSentence, setEditFirstSentence] = useState("");
   const [editSecondSentence, setEditSecondSentence] = useState("");
-  const [editScore, setEditScore] = useState(0);
+  const [editSimilarity, setEditSimilarity] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDataGroup, setSelectedDataGroup] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
@@ -33,6 +34,38 @@ const Data = () => {
   const [newGroupName, setNewGroupName] = useState("");
   const [newGroupScoreType, setNewGroupScoreType] = useState("");
   const [isChangeButtonVisible, setIsChangeButtonVisible] = useState(false);
+  const [datasetConfig, setDatasetConfig] = useState(null); // State lưu trữ cấu trúc dataset
+  const [selectedLanguage, setSelectedLanguage] = useState("ALL"); // Ngôn ngữ mặc định
+  const [selectedSimilarity, setSelectedSimilarity] = useState("COS_SIM"); // Loại so sánh mặc định
+  const [selectedModel, setSelectedModel] = useState(""); // Mô hình nhúng mặc định
+  const [showExportPopup, setShowExportPopup] = useState(false);
+  const [loading, setLoading] = useState(false);
+  // Tạo một instance Axios riêng
+  const api = axios.create();
+
+  // Thêm request interceptor
+  api.interceptors.request.use(
+    (config) => {
+      setLoading(true); // Bật loading trước khi gửi request
+      return config;
+    },
+    (error) => {
+      setLoading(false); // Tắt loading nếu có lỗi
+      return Promise.reject(error);
+    }
+  );
+
+  // Thêm response interceptor
+  api.interceptors.response.use(
+    (response) => {
+      setLoading(false); // Tắt loading sau khi nhận response
+      return response;
+    },
+    (error) => {
+      setLoading(false); // Tắt loading nếu có lỗi
+      return Promise.reject(error);
+    }
+  );
 
   useEffect(() => {
     fetchData();
@@ -45,7 +78,7 @@ const Data = () => {
 
   const fetchData = async () => {
     try {
-      const { data } = await axios.get(`${HOST}/dataset`);
+      const { data } = await api.get(`${HOST}/dataset`);
 
       setDataGroups(data.datasets);
     } catch (error) {
@@ -55,7 +88,7 @@ const Data = () => {
 
   const fetchDataSet = async () => {
     try {
-      const response = await axios.get(`${HOST}/dataset/${selectedDataGroup.id}/records?skip=0&limit=10`);
+      const response = await api.get(`${HOST}/dataset/${selectedDataGroup.id}/records?skip=0&limit=10`);
       setDatasets(response.data.documents);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -86,8 +119,28 @@ const Data = () => {
       setInputs2(value);
     }
   };
-
   const handleSimilarityLabelChange = (e) => {
+    if (selectedDataGroup.similarity_type === "COS_SIM") {
+      let value = parseFloat(e.target.value);
+      if (isNaN(value) || value < 0 || value > 1) {
+        setErrorMessage("Giá trị điểm tương đồng không hợp lệ (0 - 1).");
+        return;
+      }
+      setSimilarityLabel(value);
+    } else if (selectedDataGroup.similarity_type === "LEVEL") {
+      let value = parseInt(e.target.value, 10); // Chuyển sang số nguyên
+      if (isNaN(value) || value < 0 || value > 5) {
+        setErrorMessage("Giá trị điểm tương đồng không hợp lệ (0 - 5).");
+        return;
+      }
+      setSimilarityLabel(value);
+    } else {
+      setSimilarityLabel(e.target.value === "true"); // Chuyển đổi thành boolean
+    }
+    setErrorMessage(""); // Xóa thông báo lỗi nếu có
+  };
+
+  const handleSimilarityLabelChange1 = (e) => {
     let value = parseFloat(e.target.value);
 
     // Kiểm tra nếu giá trị nhập vào không nằm trong khoảng từ 0 đến 1
@@ -113,10 +166,10 @@ const Data = () => {
         dataset_id: selectedDataGroup.id, // Thêm _id của dataset vào dữ liệu mới
         first_sentence: inputs1,
         second_sentence: inputs2,
-        score: similarityLabel
+        similarity: similarityLabel
       };
 
-      await axios.post(`${HOST}/dataset/record`, newData);
+      await api.post(`${HOST}/dataset/record`, newData);
 
       // Hiển thị popup thành công
       setIsAddDataPopup(true);
@@ -131,42 +184,40 @@ const Data = () => {
 
   const handleExportData = async () => {
     try {
-      const response = await axios.get(`${HOST}/dataset/${selectedDataGroup}/records`);
+      const response = await api.get(`${HOST}/dataset/${selectedDataGroup.id}/records`);
       const datasets = response.data.documents;
 
-      // Tạo tiêu đề cho file CSV với encoding UTF-8
-      const csvHeader = "\uFEFFFirst Sentence,Second Sentence,Score\n";
-      // Tạo nội dung cho file CSV từ dữ liệu datasets
-      let csvContent = "";
+      // Tạo tiêu đề cho file CSV (điều chỉnh dựa trên selectedSimilarity)
+      const csvHeader = `\uFEFFFirst Sentence,Second Sentence,${
+        selectedSimilarity === "BOOL" ? "Similar (True/False)" : "Similarity"
+      }\n`;
 
+      let csvContent = "";
       datasets.forEach((data) => {
-        const { first_sentence, second_sentence, score } = data;
-        // Bao quanh giá trị của mỗi trường trong dấu ngoặc kép và sử dụng dấu phẩy làm phân tách
-        csvContent += `"${first_sentence.replace(/"/g, '""')}","${second_sentence.replace(/"/g, '""')}",${score}\n`;
+        const { first_sentence, second_sentence, similarity } = data;
+        const formattedSimilarity = selectedSimilarity === "BOOL" ? (similarity ? "True" : "False") : similarity;
+
+        csvContent += `"${first_sentence.replace(/"/g, '""')}","${second_sentence.replace(
+          /"/g,
+          '""'
+        )}",${formattedSimilarity}\n`;
       });
 
-      // Tạo nội dung hoàn chỉnh của file CSV bằng cách kết hợp tiêu đề và nội dung
       const csv = csvHeader + csvContent;
-
-      // Tạo blob từ chuỗi CSV với encoding UTF-8
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-
-      // Tạo URL từ blob để người dùng có thể tải xuống
       const url = window.URL.createObjectURL(blob);
-
-      // Tạo phần tử <a> ẩn để tải xuống tệp CSV
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", `${selectedDataGroup.name}-data.csv`);
       document.body.appendChild(link);
-
-      // Kích hoạt sự kiện nhấp chuột trên phần tử <a> để bắt đầu quá trình tải xuống
       link.click();
-
-      // Loại bỏ phần tử <a> sau khi tải xuống hoàn tất
       document.body.removeChild(link);
+      setShowExportPopup(true);
+      setErrorMessage(null);
     } catch (error) {
       console.error("Error exporting data:", error);
+      setShowExportPopup(true);
+      setErrorMessage(error.message);
     }
   };
 
@@ -174,42 +225,63 @@ const Data = () => {
     setEditDataIndex(index);
     setEditFirstSentence(datasets[index].first_sentence);
     setEditSecondSentence(datasets[index].second_sentence);
-    setEditScore(datasets[index].score);
+    setEditSimilarity(datasets[index].score);
     setIsPopUpEditData(true);
   };
 
   const handleSaveClick = async (index) => {
-    // Kiểm tra lỗi trước khi lưu
     let hasError = false;
-    if (!editFirstSentence || !editSecondSentence || editScore === "") {
+    let editSimilarityValue = editSimilarity; // Biến tạm để lưu giá trị editSimilarity trước khi chuyển đổi
+
+    if (!editFirstSentence || !editSecondSentence || editSimilarity === "") {
       setErrorMessage("Vui lòng nhập đầy đủ thông tin cho tất cả các trường.");
       hasError = true;
-    } else if (editScore < 0 || editScore > 1) {
-      setErrorMessage("Điểm phải nằm trong khoảng từ 0 đến 1");
-      hasError = true;
+    } else {
+      switch (selectedDataGroup.similarity_type) {
+        case "COS_SIM":
+          editSimilarityValue = parseFloat(editSimilarity);
+          if (isNaN(editSimilarityValue) || editSimilarityValue < 0 || editSimilarityValue > 1) {
+            setErrorMessage("Điểm COS_SIM phải nằm trong khoảng từ 0 đến 1.");
+            hasError = true;
+          }
+          break;
+        case "LEVEL":
+          if (editSimilarity !== 0) {
+            editSimilarityValue = parseInt(editSimilarity, 10);
+          } // Chuyển đổi sang số nguyên
+          if (editSimilarityValue > 5) {
+            // Kiểm tra giá trị hợp lệ
+            setErrorMessage("Điểm LEVEL phải là số nguyên từ 0 đến 5.");
+            hasError = true;
+          }
+          break;
+
+        case "BOOL":
+          editSimilarityValue = editSimilarity === "true";
+          break;
+        default:
+          setErrorMessage("Loại similarity không hợp lệ.");
+          hasError = true;
+      }
     }
 
-    // Nếu có lỗi, không thực hiện lưu dữ liệu
     if (hasError) {
       return;
     }
 
-    // Nếu không có lỗi, tiến hành lưu dữ liệu
     try {
       const updatedData = {
         first_sentence: editFirstSentence,
         second_sentence: editSecondSentence,
-        score: editScore
+        similarity: editSimilarityValue // Sử dụng trường "similarity"
       };
+      alert(JSON.stringify(updatedData));
+      await api.put(`${HOST}/dataset/record/${datasets[editDataIndex]._id}`, updatedData);
 
-      await axios.put(`${HOST}/dataset/record/${datasets[editDataIndex]._id}`, updatedData);
-
-      // Sau khi cập nhật dữ liệu thành công, bạn có thể gọi lại hàm fetchData để cập nhật dữ liệu
       fetchDataSet();
       setEditDataIndex(-1);
       setErrorMessage("");
       setIsPopUpEditData(false);
-      setErrorMessage(""); // Reset errorMessage khi đóng pop-up
     } catch (error) {
       setErrorMessage("Xảy ra lỗi trong quá trình chỉnh sửa");
     }
@@ -222,7 +294,7 @@ const Data = () => {
 
   const handleConfirmDelete = async () => {
     try {
-      await axios.delete(`${HOST}/dataset/record/${datasets[editDataIndex]._id}`);
+      await api.delete(`${HOST}/dataset/record/${datasets[editDataIndex]._id}`);
 
       // Sau khi xóa dữ liệu thành công, bạn có thể gọi lại hàm fetchDataSet để cập nhật dữ liệu
       fetchDataSet();
@@ -235,9 +307,13 @@ const Data = () => {
   const handleDataGroupChange = (event) => {
     const selectedGroupId = event.target.value;
     const selectedGroup = datagroups.find((group) => group._id === selectedGroupId);
-    // Cập nhật selectedDataGroup với id và name tương ứng
-    setSelectedDataGroup({ id: selectedGroup._id, name: selectedGroup.name });
-
+    // Cập nhật selectedDataGroup với id, name và similarity_type tương ứng
+    setSelectedDataGroup({
+      id: selectedGroup._id,
+      name: selectedGroup.name,
+      similarity_type: selectedGroup.similarity_type // Thêm similarity_type
+    });
+    setSimilarityLabel("");
     setShowTable(false);
   };
 
@@ -248,7 +324,7 @@ const Data = () => {
     setErrorMessage("");
   };
 
-  const handleCreateGroup = async () => {
+  const handleCreateGroup1 = async () => {
     if (!newGroupName || !newGroupScoreType) {
       setErrorMessage("*Tên nhóm và loại điểm không được để trống.");
       return;
@@ -260,7 +336,29 @@ const Data = () => {
         score_type: newGroupScoreType
       };
 
-      await axios.post(`${HOST}/dataset`, newGroup);
+      await api.post(`${HOST}/dataset`, newGroup);
+      fetchData();
+      setIsPopUpAddGroup(false);
+      setErrorMessage("");
+    } catch (error) {
+      console.error("Error creating new group:", error);
+      setErrorMessage("*Lỗi khi tạo nhóm mới: " + error.response.data.detail);
+    }
+  };
+  const handleCreateGroup = async () => {
+    if (!newGroupName || !selectedLanguage || !selectedSimilarity) {
+      setErrorMessage("*Vui lòng điền đầy đủ thông tin.");
+      return;
+    }
+
+    try {
+      const newGroup = {
+        name: newGroupName,
+        language: selectedLanguage,
+        similarity_type: selectedSimilarity // Sử dụng similarity_type thay vì score_type
+      };
+
+      await api.post(`${HOST}/dataset`, newGroup);
       fetchData();
       setIsPopUpAddGroup(false);
       setErrorMessage("");
@@ -279,7 +377,7 @@ const Data = () => {
 
     try {
       // Gửi yêu cầu xóa nhóm dữ liệu
-      await axios.delete(`${HOST}/dataset/${selectedDataGroup.id}`);
+      await api.delete(`${HOST}/dataset/${selectedDataGroup.id}`);
       // Xóa thành công, cập nhật lại danh sách nhóm dữ liệu
       fetchData();
       setIsPopUpDelGroup(false);
@@ -350,83 +448,113 @@ const Data = () => {
           Xoá nhóm
         </button>
       </div>
-      <div className="flex items-center justify-center">
-        <div className="flex flex-col justify-center w-2/5 mr-4">
-          {/* Input 1 */}
-          <div className="w-full mb-8 border border-gray-200 rounded-lg bg-gray-50">
-            <div className="relative p-4 rounded-lg bg-gray-50">
-              <textarea
-                id="search"
-                rows={5}
-                className="w-full px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 resize-none focus:ring-0"
-                placeholder={t("placeholderText-1")}
-                required
-                value={inputs1}
-                onChange={handleChangeInput1}
-              />
-              <label htmlFor="text" className="absolute text-xs text-gray-900 opacity-70 right-4 bottom-4">
-                {numberOfCharacters1} / {MAXIMUM_NUMBER_OF_CHARACTERS}
-              </label>
+      {!selectedDataGroup?.id && (
+        <p className="text-center text-gray-600 mt-4">Vui lòng chọn nhóm dữ liệu muốn hiển thị</p>
+      )}
+      {selectedDataGroup?.id && (
+        <div className="flex items-center justify-center">
+          <div className="flex flex-col justify-center w-2/5 mr-4">
+            {/* Input 1 */}
+            <div className="w-full mb-8 border border-gray-200 rounded-lg bg-gray-50">
+              <div className="relative p-4 rounded-lg bg-gray-50">
+                <textarea
+                  id="search"
+                  rows={5}
+                  className="w-full px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 resize-none focus:ring-0"
+                  placeholder={t("placeholderText-1")}
+                  required
+                  value={inputs1}
+                  onChange={handleChangeInput1}
+                />
+                <label htmlFor="text" className="absolute text-xs text-gray-900 opacity-70 right-4 bottom-4">
+                  {numberOfCharacters1} / {MAXIMUM_NUMBER_OF_CHARACTERS}
+                </label>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex flex-col justify-center w-2/5 ml-4">
-          {/* Input 2 */}
-          <div className="w-full mb-8 border border-gray-200 rounded-lg bg-gray-50">
-            <div className="relative p-4 rounded-lg bg-gray-50">
-              <textarea
-                id="search"
-                rows={5}
-                className="w-full px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 resize-none focus:ring-0"
-                placeholder={t("placeholderText-1")}
-                required
-                value={inputs2}
-                onChange={handleChangeInput2}
-              />
-              <label htmlFor="text" className="absolute text-xs text-gray-900 opacity-70 right-4 bottom-4">
-                {numberOfCharacters2} / {MAXIMUM_NUMBER_OF_CHARACTERS}
-              </label>
+          <div className="flex flex-col justify-center w-2/5 ml-4">
+            {/* Input 2 */}
+            <div className="w-full mb-8 border border-gray-200 rounded-lg bg-gray-50">
+              <div className="relative p-4 rounded-lg bg-gray-50">
+                <textarea
+                  id="search"
+                  rows={5}
+                  className="w-full px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 resize-none focus:ring-0"
+                  placeholder={t("placeholderText-1")}
+                  required
+                  value={inputs2}
+                  onChange={handleChangeInput2}
+                />
+                <label htmlFor="text" className="absolute text-xs text-gray-900 opacity-70 right-4 bottom-4">
+                  {numberOfCharacters2} / {MAXIMUM_NUMBER_OF_CHARACTERS}
+                </label>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Thêm nhãn tương đồng, button Thêm dữ liệu và button Xuất file dữ liệu */}
-      <div className="flex items-center justify-center mb-4">
-        <div className="text-left pr-4">
-          <p className="text-gray-600">Nhập độ tương đồng: </p>
-        </div>
-        <input
-          type="number"
-          step="0.01"
-          min="0"
-          max="1"
-          value={similarityLabel}
-          onChange={handleSimilarityLabelChange}
-          className="w-1/8 px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 rounded-lg focus:ring-0 dark:text-white dark:bg-gray-800 dark:placeholder-gray-400 outline-0"
-        />
-        <button onClick={handleAddData} className="px-4 py-2 mx-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600">
-          Thêm dữ liệu
-        </button>
-        <button onClick={handleExportData} className="px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600">
-          Xuất file dữ liệu
-        </button>
-      </div>
-      {showTable && (
-        <>
-          <h2>Tìm kiếm dữ liệu</h2>
-          <div className="search-bar">
-            <input
-              type="text"
-              placeholder="Nhập từ khóa tìm kiếm..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <button className="search-button" onClick={() => console.log("Search clicked")}>
-              Tìm kiếm
-            </button>
+      {/* Thêm nhãn tương đồng */}
+      {selectedDataGroup?.id && (
+        <div className="flex items-center justify-center mb-4">
+          <div className="text-left pr-4">
+            <p className="text-gray-600">Nhập độ tương đồng:</p>
           </div>
+
+          {selectedDataGroup.similarity_type === "COS_SIM" && (
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              max="1"
+              value={similarityLabel}
+              onChange={handleSimilarityLabelChange}
+              className="w-1/8 px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 rounded-lg focus:ring-0 dark:text-white dark:bg-gray-800 dark:placeholder-gray-400 outline-0"
+            />
+          )}
+
+          {selectedDataGroup.similarity_type === "LEVEL" && (
+            <select
+              value={similarityLabel}
+              onChange={handleSimilarityLabelChange}
+              className="w-1/8 px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 rounded-lg focus:ring-0 dark:text-white dark:bg-gray-800 dark:placeholder-gray-400 outline-0"
+            >
+              {lev_array.map((level) => (
+                <option key={level} value={level}>
+                  {level}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {selectedDataGroup.similarity_type === "BOOL" && (
+            <select
+              value={similarityLabel ? "true" : "false"} // Hiển thị "true" hoặc "false"
+              onChange={handleSimilarityLabelChange}
+              className="w-1/8 px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 rounded-lg focus:ring-0 dark:text-white dark:bg-gray-800 dark:placeholder-gray-400 outline-0"
+            >
+              <option value="true">True</option>
+              <option value="false">False</option>
+            </select>
+          )}
+          <button
+            onClick={handleAddData}
+            className="px-4 py-2 mx-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+          >
+            Thêm dữ liệu
+          </button>
+          <button
+            onClick={handleExportData}
+            className="px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600"
+          >
+            Xuất file dữ liệu
+          </button>
+        </div>
+      )}
+      {showTable && selectedDataGroup?.id && (
+        <>
           <div className="table-container">
             <h2>Bảng dữ liệu các câu tương đồng</h2>
             <div className="table-wrapper">
@@ -444,7 +572,15 @@ const Data = () => {
                     <tr key={index} className={editDataIndex === index ? "editing-row" : ""}>
                       <td>{data.first_sentence}</td>
                       <td>{data.second_sentence}</td>
-                      <td className="score-column">{data.score}</td>
+                      <td className="score-column">
+                        {
+                          selectedDataGroup.similarity_type === "BOOL"
+                            ? data.similarity
+                              ? "True"
+                              : "False" // Hiển thị True/False cho BOOL
+                            : data.similarity // Hiển thị giá trị số cho các loại khác
+                        }
+                      </td>
                       <td className="task-buttons">
                         <button className="action-button" onClick={() => handleUpdateClick(index)}>
                           Chỉnh sửa
@@ -464,9 +600,9 @@ const Data = () => {
       {IsPopUpAddGroup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-lg p-8 bg-white rounded-lg">
-            <h2 className="mb-4 text-2xl font-semibold text-center">Thêm Nhóm Dữ Liệu</h2>
+            {/* Trường nhập tên nhóm */}
             <div className="mb-4">
-              <label className="block mb-2 text-gray-600">Tên Nhóm</label>
+              <label className="block mb-2 text-gray-600">Tên Nhóm:</label>
               <input
                 type="text"
                 value={newGroupName}
@@ -475,15 +611,33 @@ const Data = () => {
                 className="w-full px-4 py-2 text-base text-gray-900 border border-gray-300 rounded-lg focus:ring-0"
               />
             </div>
+
+            {/* Trường chọn ngôn ngữ */}
             <div className="mb-4">
-              <label className="block mb-2 text-gray-600">Loại Điểm</label>
-              <input
-                type="text"
-                value={newGroupScoreType}
-                placeholder="Nhập kiểu dữ liệu điểm: float, int, ..."
-                onChange={(e) => setNewGroupScoreType(e.target.value)}
+              <label className="block mb-2 text-gray-600">Ngôn ngữ:</label>
+              <select
+                value={selectedLanguage}
+                onChange={(e) => setSelectedLanguage(e.target.value)}
                 className="w-full px-4 py-2 text-base text-gray-900 border border-gray-300 rounded-lg focus:ring-0"
-              />
+              >
+                <option value="EN">Tiếng Anh</option>
+                <option value="VN">Tiếng Việt</option>
+                <option value="ALL">ALL</option>
+              </select>
+            </div>
+
+            {/* Trường chọn loại so sánh */}
+            <div className="mb-4">
+              <label className="block mb-2 text-gray-600">Loại So Sánh:</label>
+              <select
+                value={selectedSimilarity}
+                onChange={(e) => setSelectedSimilarity(e.target.value)}
+                className="w-full px-4 py-2 text-base text-gray-900 border border-gray-300 rounded-lg focus:ring-0"
+              >
+                <option value="LEVEL">LEVEL (1-5)</option>
+                <option value="COS_SIM">COS_SIM (0-1)</option>
+                <option value="BOOL">TRUE-FALSE</option>
+              </select>
             </div>
             {errorMessage && <div className="mb-3 text-red-500">{errorMessage}</div>}
             <div className="flex justify-end">
@@ -550,15 +704,42 @@ const Data = () => {
             </div>
             <div className="mb-4">
               <label className="block mb-2 text-gray-600">Điểm</label>
-              <input
-                type="number"
-                value={editScore}
-                onChange={(e) => setEditScore(parseFloat(e.target.value))}
-                min="0"
-                max="1"
-                step="0.01"
-                className="w-full px-4 py-2 text-base text-gray-900 border border-gray-300 rounded-lg focus:ring-0"
-              />
+              {selectedDataGroup.similarity_type === "COS_SIM" && (
+                <input
+                  type="number"
+                  value={editSimilarity}
+                  onChange={(e) => setEditSimilarity(e.target.value)}
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  className="w-full px-4 py-2 text-base text-gray-900 border border-gray-300 rounded-lg focus:ring-0"
+                />
+              )}
+
+              {selectedDataGroup.similarity_type === "LEVEL" && (
+                <select
+                  value={editSimilarity}
+                  onChange={(e) => setEditSimilarity(e.target.value)}
+                  className="w-full px-4 py-2 text-base text-gray-900 border border-gray-300 rounded-lg focus:ring-0"
+                >
+                  {lev_array.map((level) => (
+                    <option key={level} value={level}>
+                      {level}
+                    </option>
+                  ))}
+                </select>
+              )}
+
+              {selectedDataGroup.similarity_type === "BOOL" && (
+                <select
+                  value={editSimilarity ? "true" : "false"}
+                  onChange={(e) => setEditSimilarity(e.target.value)}
+                  className="w-full px-4 py-2 text-base text-gray-900 border border-gray-300 rounded-lg focus:ring-0"
+                >
+                  <option value="true">True</option>
+                  <option value="false">False</option>
+                </select>
+              )}
             </div>
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
@@ -624,6 +805,33 @@ const Data = () => {
               Đóng
             </button>
           </div>
+        </div>
+      )}
+
+      {showExportPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="w-full max-w-sm p-6 bg-white rounded-lg">
+            <h2 className={`mb-4 text-lg font-semibold ${errorMessage ? "text-red-600" : "text-green-600"}`}>
+              {errorMessage ? errorMessage : "Xuất file thành công"}
+            </h2>
+            <button
+              onClick={() => {
+                setShowExportPopup(false);
+                setErrorMessage(null);
+              }}
+              className={`px-4 py-2 text-white ${
+                errorMessage ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
+              } rounded-lg`}
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      )}
+      {/* Overlay và spinner */}
+      {loading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
         </div>
       )}
     </div>

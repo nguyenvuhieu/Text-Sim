@@ -1,0 +1,1648 @@
+{
+	"info": {
+		"_postman_id": "5a393fba-9517-45b1-9ef5-8854c6bc792a",
+		"name": "Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19808080"
+	},
+	"item": [
+		{
+			"name": "Dataset",
+			"item": [
+				{
+					"name": "Record",
+					"item": [
+						{
+							"name": "Create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"dataset_id\": \"ac48838b-a2c8-4274-ae2f-6558224cf2ce\",\n    \"first_sentence\": \"Hôm nay trời nắng\",\n    \"second_sentence\": \"Hôm nay trời mưa\",\n    \"similarity\": 4\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/dataset/record",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"dataset",
+										"record"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Create - COS SIM",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"dataset_id\": \"bf4b624e-b753-4e8f-8ba2-75ad9cf0e860\",\n    \"first_sentence\": \"Hôm nay trời nắng\",\n    \"second_sentence\": \"Hôm nay trời mưa\",\n    \"similarity\": 0.7\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/dataset/record",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"dataset",
+												"record"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Thu, 06 Jun 2024 15:05:24 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "198"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"_id\": \"ffb2c613-e001-41f6-8230-f7cd53d64f98\",\n    \"dataset_id\": \"bf4b624e-b753-4e8f-8ba2-75ad9cf0e860\",\n    \"first_sentence\": \"Hôm nay trời nắng\",\n    \"second_sentence\": \"Hôm nay trời mưa\",\n    \"similarity\": 0.7\n}"
+								},
+								{
+									"name": "Create - BOOL",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"dataset_id\": \"f59430a2-f7bb-4655-b1cb-5187945cc386\",\n    \"first_sentence\": \"Hôm nay trời nắng\",\n    \"second_sentence\": \"Hôm nay trời mưa\",\n    \"similarity\": true\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/dataset/record",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"dataset",
+												"record"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Thu, 06 Jun 2024 15:07:23 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "199"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"_id\": \"1be69642-d2f9-4fdd-8fdb-1ef4cf18acdf\",\n    \"dataset_id\": \"f59430a2-f7bb-4655-b1cb-5187945cc386\",\n    \"first_sentence\": \"Hôm nay trời nắng\",\n    \"second_sentence\": \"Hôm nay trời mưa\",\n    \"similarity\": true\n}"
+								},
+								{
+									"name": "Create - LEVEL",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"dataset_id\": \"ac48838b-a2c8-4274-ae2f-6558224cf2ce\",\n    \"first_sentence\": \"Hôm nay trời nắng\",\n    \"second_sentence\": \"Hôm nay trời mưa\",\n    \"similarity\": 4\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/dataset/record",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"dataset",
+												"record"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Thu, 06 Jun 2024 15:08:58 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "196"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"_id\": \"02ffa541-e177-4a35-a238-24846d6236ed\",\n    \"dataset_id\": \"ac48838b-a2c8-4274-ae2f-6558224cf2ce\",\n    \"first_sentence\": \"Hôm nay trời nắng\",\n    \"second_sentence\": \"Hôm nay trời mưa\",\n    \"similarity\": 4\n}"
+								}
+							]
+						},
+						{
+							"name": "List",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/dataset/ac48838b-a2c8-4274-ae2f-6558224cf2ce/records?skip=0&limit=10",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"dataset",
+										"ac48838b-a2c8-4274-ae2f-6558224cf2ce",
+										"records"
+									],
+									"query": [
+										{
+											"key": "skip",
+											"value": "0"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "List",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/dataset/ac48838b-a2c8-4274-ae2f-6558224cf2ce/records?skip=0&limit=10",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"dataset",
+												"ac48838b-a2c8-4274-ae2f-6558224cf2ce",
+												"records"
+											],
+											"query": [
+												{
+													"key": "skip",
+													"value": "0"
+												},
+												{
+													"key": "limit",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Thu, 06 Jun 2024 16:05:46 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "577"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"documents\": [\n        {\n            \"_id\": \"726d1aa2-42f2-49df-a0c5-199b39f2bdca\",\n            \"dataset_id\": \"ac48838b-a2c8-4274-ae2f-6558224cf2ce\",\n            \"first_sentence\": \"Hôm nay trời nắng\",\n            \"second_sentence\": \"Hôm nay trời mưa\",\n            \"similarity\": 4,\n            \"updated_at\": \"2024-06-06T23:03:08.342043\",\n            \"created_at\": \"2024-06-06T23:03:08.341967\"\n        },\n        {\n            \"_id\": \"8167a4e1-43fa-45dc-8017-6878d9333d9f\",\n            \"dataset_id\": \"ac48838b-a2c8-4274-ae2f-6558224cf2ce\",\n            \"first_sentence\": \"Hôm nay trời nắng\",\n            \"second_sentence\": \"Hôm nay trời mưa\",\n            \"similarity\": 1,\n            \"updated_at\": \"2024-06-06T23:02:49.709000\",\n            \"created_at\": \"2024-06-06T22:57:21.978474\"\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Get",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/dataset/record/8167a4e1-43fa-45dc-8017-6878d9333d9f",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"dataset",
+										"record",
+										"8167a4e1-43fa-45dc-8017-6878d9333d9f"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{host}}/dataset/record/8167a4e1-43fa-45dc-8017-6878d9333d9f",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"dataset",
+												"record",
+												"8167a4e1-43fa-45dc-8017-6878d9333d9f"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Thu, 06 Jun 2024 16:00:22 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "280"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"_id\": \"8167a4e1-43fa-45dc-8017-6878d9333d9f\",\n    \"dataset_id\": \"ac48838b-a2c8-4274-ae2f-6558224cf2ce\",\n    \"first_sentence\": \"Hôm nay trời nắng\",\n    \"second_sentence\": \"Hôm nay trời mưa\",\n    \"similarity\": 4,\n    \"updated_at\": \"2024-06-06T22:57:21.978513\",\n    \"created_at\": \"2024-06-06T22:57:21.978474\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Update",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"first_sentence\": \"Hôm nay trời nắng\",\n    \"second_sentence\": \"Hôm nay trời mưa\",\n    \"similarity\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/dataset/record/8167a4e1-43fa-45dc-8017-6878d9333d9f",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"dataset",
+										"record",
+										"8167a4e1-43fa-45dc-8017-6878d9333d9f"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Update",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"first_sentence\": \"Hôm nay trời nắng\",\n    \"second_sentence\": \"Hôm nay trời mưa\",\n    \"similarity\": 1\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/dataset/record/8167a4e1-43fa-45dc-8017-6878d9333d9f",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"dataset",
+												"record",
+												"8167a4e1-43fa-45dc-8017-6878d9333d9f"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Thu, 06 Jun 2024 16:02:48 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "280"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"_id\": \"8167a4e1-43fa-45dc-8017-6878d9333d9f\",\n    \"dataset_id\": \"ac48838b-a2c8-4274-ae2f-6558224cf2ce\",\n    \"first_sentence\": \"Hôm nay trời nắng\",\n    \"second_sentence\": \"Hôm nay trời mưa\",\n    \"similarity\": 1,\n    \"updated_at\": \"2024-06-06T23:02:49.709000\",\n    \"created_at\": \"2024-06-06T22:57:21.978474\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/dataset/record/726d1aa2-42f2-49df-a0c5-199b39f2bdca",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"dataset",
+										"record",
+										"726d1aa2-42f2-49df-a0c5-199b39f2bdca"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Delete",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{host}}/dataset/record/025ad057-9af7-4265-9f8d-ed3ff12f3572",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"dataset",
+												"record",
+												"025ad057-9af7-4265-9f8d-ed3ff12f3572"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Sat, 18 May 2024 08:33:28 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "21"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"deleted_records\": 1\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"level\",\n    \"language\": \"VN\",\n    \"similarity_type\": \"LEVEL\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/dataset",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"dataset"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create - COS SIM",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"cos sim\",\n    \"language\": \"VN\",\n    \"similarity_type\": \"COS_SIM\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/dataset",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"dataset"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Thu, 06 Jun 2024 14:51:21 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "107"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"_id\": \"f8cf7f89-7deb-4eef-9fcc-00042acd194e\",\n    \"name\": \"cos sim\",\n    \"language\": \"VN\",\n    \"similarity_type\": \"COS_SIM\"\n}"
+						},
+						{
+							"name": "Create - BOOL",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"bool\",\n    \"language\": \"VN\",\n    \"similarity_type\": \"BOOL\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/dataset",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"dataset"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Thu, 06 Jun 2024 14:54:37 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "101"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"_id\": \"f59430a2-f7bb-4655-b1cb-5187945cc386\",\n    \"name\": \"bool\",\n    \"language\": \"VN\",\n    \"similarity_type\": \"BOOL\"\n}"
+						},
+						{
+							"name": "Create - LEVEL",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"level\",\n    \"language\": \"VN\",\n    \"similarity_type\": \"LEVEL\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/dataset",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"dataset"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Thu, 06 Jun 2024 14:55:14 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "103"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"_id\": \"ac48838b-a2c8-4274-ae2f-6558224cf2ce\",\n    \"name\": \"level\",\n    \"language\": \"VN\",\n    \"similarity_type\": \"LEVEL\"\n}"
+						}
+					]
+				},
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/dataset",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"dataset"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "List",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/dataset",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"dataset"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Thu, 06 Jun 2024 14:55:28 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "328"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"datasets\": [\n        {\n            \"_id\": \"bf4b624e-b753-4e8f-8ba2-75ad9cf0e860\",\n            \"name\": \"cos sim\",\n            \"language\": \"VN\",\n            \"similarity_type\": \"COS_SIM\"\n        },\n        {\n            \"_id\": \"f59430a2-f7bb-4655-b1cb-5187945cc386\",\n            \"name\": \"bool\",\n            \"language\": \"VN\",\n            \"similarity_type\": \"BOOL\"\n        },\n        {\n            \"_id\": \"ac48838b-a2c8-4274-ae2f-6558224cf2ce\",\n            \"name\": \"level\",\n            \"language\": \"VN\",\n            \"similarity_type\": \"LEVEL\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/dataset/4f71de4f-a5cb-4193-b095-f424c7b237e7",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"dataset",
+								"4f71de4f-a5cb-4193-b095-f424c7b237e7"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/dataset/5ef61d52-4bb7-4372-8037-8dbff6c5af54",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"dataset",
+										"5ef61d52-4bb7-4372-8037-8dbff6c5af54"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 18 May 2024 08:34:50 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "50"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"deleted_datasets\": 1,\n    \"deleted_dataset_records\": 2\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Model",
+			"item": [
+				{
+					"name": "Activate",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"all-MiniLM-L6-v2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/model",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"model"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/model",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"model"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deactivate",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"all-MiniLM-L6-v2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/model",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"model"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Corpus",
+			"item": [
+				{
+					"name": "Document",
+					"item": [
+						{
+							"name": "Create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"corpus_id\": \"8139b09b-58aa-4af6-9454-d7f4ff0aecb4\",\n    \"title\": \"Tài liệu 1\",\n    \"content\": \"Hello\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/corpus/document",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"corpus",
+										"document"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Create",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"corpus_id\": \"8139b09b-58aa-4af6-9454-d7f4ff0aecb4\",\n    \"title\": \"Tài liệu 1\",\n    \"content\": \"Hello\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/corpus/document",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"corpus",
+												"document"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 07 Jun 2024 13:35:16 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "262"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"_id\": \"ac49fba5-43c6-47e8-b779-b53224cb28c7\",\n    \"corpus_id\": \"8139b09b-58aa-4af6-9454-d7f4ff0aecb4\",\n    \"title\": \"Tài liệu 1\",\n    \"text\": {\n        \"sentences\": [\n            \"Hello\"\n        ],\n        \"paragraph_index\": [\n            [\n                0,\n                0\n            ]\n        ]\n    },\n    \"updated_at\": \"2024-06-07T20:35:17.443723\",\n    \"created_at\": \"2024-06-07T20:35:17.443714\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Get",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/corpus/document/ac49fba5-43c6-47e8-b779-b53224cb28c7",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"corpus",
+										"document",
+										"ac49fba5-43c6-47e8-b779-b53224cb28c7"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{host}}/corpus/document/ac49fba5-43c6-47e8-b779-b53224cb28c7",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"corpus",
+												"document",
+												"ac49fba5-43c6-47e8-b779-b53224cb28c7"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 07 Jun 2024 13:37:03 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "1078"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"_id\": \"ac49fba5-43c6-47e8-b779-b53224cb28c7\",\n    \"corpus_id\": \"8139b09b-58aa-4af6-9454-d7f4ff0aecb4\",\n    \"title\": \"Update\",\n    \"text\": {\n        \"sentences\": [\n            \"I was a wayward kid who grew up on the literary side of life, treating math and science as if they were pustules from the plague.\",\n            \"So it’s a little strange how I’ve ended up now—someone who dances daily with triple integrals, Fourier transforms, and that crown jewel of mathematics, Euler’s equation.\",\n            \"It’s hard to believe I’ve flipped from a virtually congenital math-phobe to a professor of engineering.One day, one of my students asked me how I did it—how I changed my brain.\",\n            \"I wanted to answer Hell—with lots of difficulty!\",\n            \"After all, I’d flunked my way through elementary, middle, and high school math and science.\",\n            \"In fact, I didn’t start studying remedial math until I left the Army at age 26.\",\n            \"If there were a textbook example of the potential for adult neural plasticity, I’d be Exhibit A.\"\n        ],\n        \"paragraph_index\": [\n            [\n                0,\n                6\n            ]\n        ]\n    },\n    \"updated_at\": \"2024-06-07T20:35:38.582000\",\n    \"created_at\": \"2024-06-07T20:35:17.443714\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Update",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Update\",\n    \"content\": \"I was a wayward kid who grew up on the literary side of life, treating math and science as if they were pustules from the plague. So it’s a little strange how I’ve ended up now—someone who dances daily with triple integrals, Fourier transforms, and that crown jewel of mathematics, Euler’s equation. It’s hard to believe I’ve flipped from a virtually congenital math-phobe to a professor of engineering.One day, one of my students asked me how I did it—how I changed my brain. I wanted to answer Hell—with lots of difficulty! After all, I’d flunked my way through elementary, middle, and high school math and science. In fact, I didn’t start studying remedial math until I left the Army at age 26. If there were a textbook example of the potential for adult neural plasticity, I’d be Exhibit A.\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/corpus/document/ac49fba5-43c6-47e8-b779-b53224cb28c7",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"corpus",
+										"document",
+										"ac49fba5-43c6-47e8-b779-b53224cb28c7"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Update",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"title\": \"Update\",\n    \"content\": \"I was a wayward kid who grew up on the literary side of life, treating math and science as if they were pustules from the plague. So it’s a little strange how I’ve ended up now—someone who dances daily with triple integrals, Fourier transforms, and that crown jewel of mathematics, Euler’s equation. It’s hard to believe I’ve flipped from a virtually congenital math-phobe to a professor of engineering.One day, one of my students asked me how I did it—how I changed my brain. I wanted to answer Hell—with lots of difficulty! After all, I’d flunked my way through elementary, middle, and high school math and science. In fact, I didn’t start studying remedial math until I left the Army at age 26. If there were a textbook example of the potential for adult neural plasticity, I’d be Exhibit A.\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/corpus/document/ac49fba5-43c6-47e8-b779-b53224cb28c7",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"corpus",
+												"document",
+												"ac49fba5-43c6-47e8-b779-b53224cb28c7"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 07 Jun 2024 13:37:14 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "1078"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"_id\": \"ac49fba5-43c6-47e8-b779-b53224cb28c7\",\n    \"corpus_id\": \"8139b09b-58aa-4af6-9454-d7f4ff0aecb4\",\n    \"title\": \"Update\",\n    \"text\": {\n        \"sentences\": [\n            \"I was a wayward kid who grew up on the literary side of life, treating math and science as if they were pustules from the plague.\",\n            \"So it’s a little strange how I’ve ended up now—someone who dances daily with triple integrals, Fourier transforms, and that crown jewel of mathematics, Euler’s equation.\",\n            \"It’s hard to believe I’ve flipped from a virtually congenital math-phobe to a professor of engineering.One day, one of my students asked me how I did it—how I changed my brain.\",\n            \"I wanted to answer Hell—with lots of difficulty!\",\n            \"After all, I’d flunked my way through elementary, middle, and high school math and science.\",\n            \"In fact, I didn’t start studying remedial math until I left the Army at age 26.\",\n            \"If there were a textbook example of the potential for adult neural plasticity, I’d be Exhibit A.\"\n        ],\n        \"paragraph_index\": [\n            [\n                0,\n                6\n            ]\n        ]\n    },\n    \"updated_at\": \"2024-06-07T20:37:15.509000\",\n    \"created_at\": \"2024-06-07T20:35:17.443714\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/corpus/document/20763cd6-fddd-45d6-b796-8fda55861855",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"corpus",
+										"document",
+										"20763cd6-fddd-45d6-b796-8fda55861855"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Delete",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{host}}/corpus/document/af30139c-8779-445d-9700-271a8e1c4492",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"corpus",
+												"document",
+												"af30139c-8779-445d-9700-271a8e1c4492"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 17 May 2024 16:53:16 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "19"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"deleted_count\": 1\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/corpus?skip=0&limit=10",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"corpus"
+							],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "List",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/corpus?skip=0&limit=10",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"corpus"
+									],
+									"query": [
+										{
+											"key": "skip",
+											"value": "0"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Wed, 22 May 2024 16:04:39 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "254"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"corpus\": [\n        {\n            \"_id\": \"9d22db34-6111-48e0-aae3-008a40a68222\",\n            \"name\": \"test\"\n        },\n        {\n            \"_id\": \"86a90b58-05b9-4daa-aae1-8a30fed3e8ac\",\n            \"name\": \"test\"\n        },\n        {\n            \"_id\": \"933fb518-2c42-4c0d-b2a9-d3d3d10cc107\",\n            \"name\": \"Vie\"\n        },\n        {\n            \"_id\": \"e4aec578-82ac-4de6-9f06-b7b2967aa1b7\",\n            \"name\": \"Eng\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/corpus",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"corpus"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"test\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/corpus",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"corpus"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Fri, 17 May 2024 16:50:38 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "60"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"_id\": \"2cbf5baa-0a00-4807-a3fc-50b3ca352cea\",\n    \"name\": \"test\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Documents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/corpus/8139b09b-58aa-4af6-9454-d7f4ff0aecb4/documents?skip=0&limit=10",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"corpus",
+								"8139b09b-58aa-4af6-9454-d7f4ff0aecb4",
+								"documents"
+							],
+							"query": [
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Documents",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/corpus/8139b09b-58aa-4af6-9454-d7f4ff0aecb4/documents?skip=0&limit=10",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"corpus",
+										"8139b09b-58aa-4af6-9454-d7f4ff0aecb4",
+										"documents"
+									],
+									"query": [
+										{
+											"key": "skip",
+											"value": "0"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Fri, 07 Jun 2024 13:36:21 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "1357"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"documents\": [\n        {\n            \"_id\": \"ac49fba5-43c6-47e8-b779-b53224cb28c7\",\n            \"corpus_id\": \"8139b09b-58aa-4af6-9454-d7f4ff0aecb4\",\n            \"title\": \"Update\",\n            \"text\": {\n                \"sentences\": [\n                    \"I was a wayward kid who grew up on the literary side of life, treating math and science as if they were pustules from the plague.\",\n                    \"So it’s a little strange how I’ve ended up now—someone who dances daily with triple integrals, Fourier transforms, and that crown jewel of mathematics, Euler’s equation.\",\n                    \"It’s hard to believe I’ve flipped from a virtually congenital math-phobe to a professor of engineering.One day, one of my students asked me how I did it—how I changed my brain.\",\n                    \"I wanted to answer Hell—with lots of difficulty!\",\n                    \"After all, I’d flunked my way through elementary, middle, and high school math and science.\",\n                    \"In fact, I didn’t start studying remedial math until I left the Army at age 26.\",\n                    \"If there were a textbook example of the potential for adult neural plasticity, I’d be Exhibit A.\"\n                ],\n                \"paragraph_index\": [\n                    [\n                        0,\n                        6\n                    ]\n                ]\n            },\n            \"updated_at\": \"2024-06-07T20:35:38.582000\",\n            \"created_at\": \"2024-06-07T20:35:17.443714\"\n        },\n        {\n            \"_id\": \"64732cf0-2e26-4a38-b049-6d4b9614cbab\",\n            \"corpus_id\": \"8139b09b-58aa-4af6-9454-d7f4ff0aecb4\",\n            \"title\": \"Tài liệu 1\",\n            \"text\": {\n                \"sentences\": [\n                    \"Hello\"\n                ],\n                \"paragraph_index\": [\n                    [\n                        0,\n                        0\n                    ]\n                ]\n            },\n            \"updated_at\": \"2024-06-07T20:34:54.248104\",\n            \"created_at\": \"2024-06-07T20:34:54.248101\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/corpus/a96b4ff9-64f6-4a94-bec0-d7734e37ed98",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"corpus",
+								"a96b4ff9-64f6-4a94-bec0-d7734e37ed98"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/corpus/2cbf5baa-0a00-4807-a3fc-50b3ca352cea",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"corpus",
+										"2cbf5baa-0a00-4807-a3fc-50b3ca352cea"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Fri, 17 May 2024 16:53:48 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "41"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"deleted_corpus\": 1,\n    \"deleted_document\": 2\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Compare",
+			"item": [
+				{
+					"name": "One Many",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"model\": \"all-MiniLM-L6-v2\",\n    \"one\": {\n        \"type\": \"RAW\",\n        \"raw\": \"Hello.\\nBye.\"\n    },\n    \"many\": [\n        {\n            \"type\": \"RAW\",\n            \"raw\": \"Hi. My name is An.\\nWho you are?\"\n        },\n        {\n            \"type\": \"RAW\",\n            \"raw\": \"Bye\"\n        },\n        {\n            \"type\": \"CORPUS_DOCUMENT\",\n            \"document_id\": \"e931a0a3-6baf-49f9-9e1b-b3992cee030d\"\n        }\n    ],\n    \"threshold\": 0.7\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/compare/one-many",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"compare",
+								"one-many"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "One Many",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"model\": \"all-MiniLM-L6-v2\",\n    \"one\": {\n        \"type\": \"RAW\",\n        \"raw\": \"Hello.\\nBye.\"\n    },\n    \"many\": [\n        {\n            \"type\": \"RAW\",\n            \"raw\": \"Hi. My name is An.\\nWho you are?\"\n        },\n        {\n            \"type\": \"RAW\",\n            \"raw\": \"Bye\"\n        },\n        {\n            \"type\": \"CORPUS_DOCUMENT\",\n            \"document_id\": \"b089b3ec-be1d-4a7d-b90e-bddcdcbf63a1\"\n        }\n    ],\n    \"threshold\": 0.7\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/compare/one-many",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"compare",
+										"one-many"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 21 May 2024 15:29:12 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "1302"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"one\": [\n        [\n            \"Hello.\"\n        ],\n        [\n            \"Bye.\"\n        ]\n    ],\n    \"similarity\": 1,\n    \"many\": [\n        [\n            [\n                \"Hi.\",\n                \"My name is An.\"\n            ],\n            [\n                \"Who you are?\"\n            ]\n        ],\n        [\n            [\n                \"Bye\"\n            ]\n        ],\n        [\n            [\n                \"I was a wayward kid who grew up on the literary side of life, treating math and science as if they were pustules from the plague.\",\n                \"So it’s a little strange how I’ve ended up now—someone who dances daily with triple integrals, Fourier transforms, and that crown jewel of mathematics, Euler’s equation.\",\n                \"It’s hard to believe I’ve flipped from a virtually congenital math-phobe to a professor of engineering.\"\n            ],\n            [\n                \"One day, one of my students asked me how I did it—how I changed my brain.\",\n                \"I wanted to answer Hell—with lots of difficulty!\",\n                \"After all, I’d flunked my way through elementary, middle, and high school math and science.\",\n                \"In fact, I didn’t start studying remedial math until I left the Army at age 26.\",\n                \"If there were a textbook example of the potential for adult neural plasticity, I’d be Exhibit A.\"\n            ]\n        ]\n    ],\n    \"similarities\": [\n        0.3333333333333333,\n        1,\n        0\n    ],\n    \"pairs\": [\n        [\n            {\n                \"first_sentence\": {\n                    \"index_paragraph\": 0,\n                    \"index_sentence\": 0\n                },\n                \"second_sentence\": {\n                    \"index_paragraph\": 0,\n                    \"index_sentence\": 0\n                },\n                \"score\": 0.8408384323120117\n            }\n        ],\n        [\n            {\n                \"first_sentence\": {\n                    \"index_paragraph\": 1,\n                    \"index_sentence\": 0\n                },\n                \"second_sentence\": {\n                    \"index_paragraph\": 0,\n                    \"index_sentence\": 0\n                },\n                \"score\": 0.9088603258132935\n            }\n        ],\n        []\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Corpus",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"model\": \"all-MiniLM-L6-v2\",\n    \"threshold\": 0.5,\n    \"text\": {\n        \"type\": \"RAW\",\n        \"raw\": \"Hello.\\nBye.\"\n    },\n    \"corpus_ids\": [\n        \"44a69ee9-d270-4c57-a88c-f40622364bc1\",\n        \"44a69ee9-d270-4c57-a88c-f40622364bc1\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/compare/corpus",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"compare",
+								"corpus"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Corpus",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"model\": \"all-MiniLM-L6-v2\",\n    \"threshold\": 0.5,\n    \"text\": {\n        \"type\": \"RAW\",\n        \"raw\": \"Hello.\\nBye.\"\n    },\n    \"corpus_ids\": [\n        \"44a69ee9-d270-4c57-a88c-f40622364bc1\",\n        \"44a69ee9-d270-4c57-a88c-f40622364bc1\"\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/compare/corpus",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"compare",
+										"corpus"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Wed, 29 May 2024 15:47:58 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "1262"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"text\": {\n        \"sentences\": [\n            \"Hello.\",\n            \"Bye.\"\n        ],\n        \"paragraph_index\": [\n            [\n                0,\n                0\n            ],\n            [\n                1,\n                1\n            ]\n        ]\n    },\n    \"similarity\": 0.5,\n    \"corpus_documents\": [\n        [\n            {\n                \"document\": {\n                    \"_id\": \"e931a0a3-6baf-49f9-9e1b-b3992cee030d\",\n                    \"corpus_id\": \"44a69ee9-d270-4c57-a88c-f40622364bc1\",\n                    \"title\": \"Tài liệu 1\",\n                    \"text\": {\n                        \"sentences\": [\n                            \"Hello\"\n                        ],\n                        \"paragraph_index\": [\n                            [\n                                0,\n                                0\n                            ]\n                        ]\n                    }\n                },\n                \"similarity\": 1,\n                \"pairs\": [\n                    {\n                        \"first_sentence\": 0,\n                        \"second_sentence\": 0,\n                        \"score\": 0.9295095801353455\n                    }\n                ]\n            },\n            {\n                \"document\": {\n                    \"_id\": \"e931a0a3-6baf-49f9-9e1b-b3992cee030d\",\n                    \"corpus_id\": \"44a69ee9-d270-4c57-a88c-f40622364bc1\",\n                    \"title\": \"Tài liệu 1\",\n                    \"text\": {\n                        \"sentences\": [\n                            \"Hello\"\n                        ],\n                        \"paragraph_index\": [\n                            [\n                                0,\n                                0\n                            ]\n                        ]\n                    }\n                },\n                \"similarity\": 1,\n                \"pairs\": [\n                    {\n                        \"first_sentence\": 0,\n                        \"second_sentence\": 0,\n                        \"score\": 0.9295095801353455\n                    }\n                ]\n            }\n        ],\n        [\n            {\n                \"document\": {\n                    \"_id\": \"e931a0a3-6baf-49f9-9e1b-b3992cee030d\",\n                    \"corpus_id\": \"44a69ee9-d270-4c57-a88c-f40622364bc1\",\n                    \"title\": \"Tài liệu 1\",\n                    \"text\": {\n                        \"sentences\": [\n                            \"Hello\"\n                        ],\n                        \"paragraph_index\": [\n                            [\n                                0,\n                                0\n                            ]\n                        ]\n                    }\n                },\n                \"similarity\": 1,\n                \"pairs\": [\n                    {\n                        \"first_sentence\": 0,\n                        \"second_sentence\": 0,\n                        \"score\": 0.9295095801353455\n                    }\n                ]\n            },\n            {\n                \"document\": {\n                    \"_id\": \"e931a0a3-6baf-49f9-9e1b-b3992cee030d\",\n                    \"corpus_id\": \"44a69ee9-d270-4c57-a88c-f40622364bc1\",\n                    \"title\": \"Tài liệu 1\",\n                    \"text\": {\n                        \"sentences\": [\n                            \"Hello\"\n                        ],\n                        \"paragraph_index\": [\n                            [\n                                0,\n                                0\n                            ]\n                        ]\n                    }\n                },\n                \"similarity\": 1,\n                \"pairs\": [\n                    {\n                        \"first_sentence\": 0,\n                        \"second_sentence\": 0,\n                        \"score\": 0.9295095801353455\n                    }\n                ]\n            }\n        ]\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Utility",
+			"item": [
+				{
+					"name": "Parse texts",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"texts\": [\n        \"Hello/nI'm from Viet Nam. Nice to meet you!\",\n        \"Goodbye. See you again.\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/utility/parse-texts",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"utility",
+								"parse-texts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Config",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/utility/config",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"utility",
+								"config"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

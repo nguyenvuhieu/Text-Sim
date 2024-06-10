@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import logo from "../../assets/images/logo.png";
 import { Helmet } from "react-helmet-async";
-import { useLocation } from "react-router-dom";
 import "./Corpus.css";
 import { useTranslation } from "react-i18next";
+
+const HOST = "http://127.0.0.1:8000";
 
 const Corpus = () => {
   const { t } = useTranslation("corpus");
@@ -32,6 +33,39 @@ const Corpus = () => {
   const [showFullContent, setShowFullContent] = useState(false);
   const [showContentPopup, setShowContentPopup] = useState(false);
   const [popupDocument, setPopupDocument] = useState(null);
+  const [showUploadInterface, setShowUploadInterface] = useState(false);
+  const [inputArray, setInputArray] = useState([]);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [showUploadResultPopup, setShowUploadResultPopup] = useState(false);
+  const [uploadResultMessage, setUploadResultMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Tạo một instance Axios riêng
+  const api = axios.create();
+
+  // Thêm request interceptor
+  api.interceptors.request.use(
+    (config) => {
+      setLoading(true); // Bật loading trước khi gửi request
+      return config;
+    },
+    (error) => {
+      setLoading(false); // Tắt loading nếu có lỗi
+      return Promise.reject(error);
+    }
+  );
+
+  // Thêm response interceptor
+  api.interceptors.response.use(
+    (response) => {
+      setLoading(false); // Tắt loading sau khi nhận response
+      return response;
+    },
+    (error) => {
+      setLoading(false); // Tắt loading nếu có lỗi
+      return Promise.reject(error);
+    }
+  );
 
   useEffect(() => {
     try {
@@ -51,7 +85,7 @@ const Corpus = () => {
   // Fetch document groups
   const fetchDocumentGroups = async () => {
     try {
-      const { data } = await axios.get("http://127.0.0.1:8000/corpus");
+      const { data } = await api.get("http://127.0.0.1:8000/corpus");
       setDocumentGroups(data.corpus);
     } catch (error) {
       console.error("Error fetching document groups:", error);
@@ -62,9 +96,7 @@ const Corpus = () => {
     try {
       if (selectedDocGroup && selectedDocGroup.id) {
         // Check if selectedDocGroup is not null
-        const response = await axios.get(
-          `http://127.0.0.1:8000/corpus/${selectedDocGroup.id}/documents?skip=0&limit=10`
-        );
+        const response = await api.get(`${HOST}/corpus/${selectedDocGroup.id}/documents?skip=0&limit=10`);
         if (response.data && response.data.documents) {
           setDocuments(response.data.documents);
           setShowTable(true); // Hiển thị bảng sau khi fetch
@@ -118,10 +150,12 @@ const Corpus = () => {
   // PopUpDochandlers
 
   const handleCloseAddPopUpDoc = () => {
+    setSelectedFiles([]);
     setIsPopUpAddDoc(false);
     setNewTitle("");
     setNewContent("");
     setErrorMessage("");
+    setShowUploadInterface(false);
   };
 
   const handleOpenEditPopUpDoc = (index) => {
@@ -174,7 +208,7 @@ const Corpus = () => {
         name: newGroupName
       };
 
-      await axios.post("http://127.0.0.1:8000/corpus", newGroup);
+      await api.post(`${HOST}/corpus", newGroup`);
       fetchDocumentGroups(); // Refresh danh sách nhóm tài liệu
       handleCloseAddPopup();
     } catch (error) {
@@ -195,7 +229,7 @@ const Corpus = () => {
         name: editTitle
       };
 
-      await axios.put(`http://127.0.0.1:8000/corpus/${documentGroups[editIndex]._id}`, updatedGroup);
+      await api.put(`${HOST}/corpus/${documentGroups[editIndex]._id}`, updatedGroup);
       fetchDocumentGroups(); // Refresh danh sách nhóm tài liệu
       handleCloseEditPopup();
     } catch (error) {
@@ -207,7 +241,7 @@ const Corpus = () => {
   // Delete group
   const handleDeleteGroup = async () => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/corpus/${documentGroups[editIndex]._id}`);
+      await api.delete(`${HOST}/corpus/${documentGroups[editIndex]._id}`);
       fetchDocumentGroups(); // Refresh danh sách nhóm tài liệu
       handleCloseDeletePopup();
     } catch (error) {
@@ -218,25 +252,66 @@ const Corpus = () => {
 
   const handleAddDocument = async () => {
     try {
-      // Kiểm tra các trường newTitle và newContent
-      if (!newTitle || !newContent) {
-        setErrorMessage("Vui lòng điền đầy đủ thông tin.");
+      let addedDocuments = [];
+      let failedDocuments = [];
+      if (showUploadInterface && inputArray.length > 0) {
+        for (const file of inputArray) {
+          const newDocument = {
+            corpus_id: selectedDocGroup.id,
+            title: file.name,
+            content: file.data
+          };
+
+          try {
+            await api.post(`${HOST}/corpus/document`, newDocument);
+            addedDocuments.push(file.name); // Thêm tên file vào mảng nếu thành công
+          } catch (err) {
+            failedDocuments.push(file.name); // Thêm tên file vào mảng nếu thất bại
+          }
+        }
+        setInputArray([]);
+      } else if (!showUploadInterface) {
+        // Xử lý trường hợp nhập thủ công
+        if (!newTitle || !newContent) {
+          setErrorMessage("Vui lòng điền đầy đủ thông tin.");
+          return;
+        }
+        const newDocument = {
+          corpus_id: selectedDocGroup.id,
+          title: newTitle,
+          content: newContent
+        };
+        await api.post(`${HOST}/corpus/document`, newDocument);
+      } else {
+        setErrorMessage("Chưa có tệp nào được chọn.");
         return;
       }
 
-      const newDocument = {
-        corpus_id: selectedDocGroup.id,
-        title: newTitle,
-        content: newContent
-      };
-
-      await axios.post("http://127.0.0.1:8000/corpus/document", newDocument);
-
       fetchDocuments();
-      handleCloseAddPopUpDoc(); // Đóng popup sau khi thêm thành công
+      setShowUploadInterface(false);
+      handleCloseAddPopUpDoc();
+
+      // Hiển thị popup thông báo kết quả
+      if (addedDocuments.length > 0 || failedDocuments.length > 0) {
+        setShowUploadResultPopup(true);
+        setUploadResultMessage(
+          <div
+            dangerouslySetInnerHTML={{
+              __html:
+                (addedDocuments.length > 0
+                  ? "Thêm thành công các tài liệu:<br />" + addedDocuments.map((name) => `• ${name}`).join("<br />")
+                  : "") +
+                (failedDocuments.length > 0
+                  ? "<br />Thêm thất bại các tài liệu:<br />" +
+                    failedDocuments.map((name) => `• ${name}`).join("<br />")
+                  : "")
+            }}
+          />
+        );
+      }
     } catch (error) {
       console.error("Error adding document:", error);
-      setErrorMessage(error.message); // Hiển thị thông báo lỗi
+      setErrorMessage(error.message);
     }
   };
 
@@ -254,7 +329,7 @@ const Corpus = () => {
         content: editContent
       };
 
-      await axios.put(`http://127.0.0.1:8000/corpus/document/${documents[editIndex]._id}`, updatedDocument);
+      await api.put(`${HOST}/corpus/document/${documents[editIndex]._id}`, updatedDocument);
       fetchDocuments();
       handleCloseEditPopUpDoc(); // Đóng popup sau khi cập nhật thành công
     } catch (error) {
@@ -265,7 +340,7 @@ const Corpus = () => {
 
   const handleDeleteDocument = async () => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/corpus/document/${documents[editIndex]._id}`);
+      await api.delete(`${HOST}/corpus/document/${documents[editIndex]._id}`);
       fetchDocuments();
       handleCloseDeletePopUpDoc(); // Đóng popup sau khi xóa thành công
     } catch (error) {
@@ -276,9 +351,8 @@ const Corpus = () => {
 
   const handleExportData = async () => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/corpus/${selectedDocGroup.id}/documents`);
+      const response = await api.get(`${HOST}/corpus/${selectedDocGroup.id}/documents`);
       const documents = response.data.documents;
-      alert("toi day r");
 
       // Tạo tiêu đề cho file CSV với encoding UTF-8
       const csvHeader = "\uFEFFTitle,Content\n";
@@ -291,7 +365,6 @@ const Corpus = () => {
         // Bao quanh giá trị của mỗi trường trong dấu ngoặc kép và sử dụng dấu phẩy làm phân tách
         csvContent += `"${title.replace(/"/g, '""')}","${content.replace(/"/g, '""')}"\n`;
       });
-      alert("co vao ko");
       // Tạo nội dung hoàn chỉnh của file CSV bằng cách kết hợp tiêu đề và nội dung
       const csv = csvHeader + csvContent;
 
@@ -338,6 +411,56 @@ const Corpus = () => {
     return output.join(" ");
   }
 
+  // Hàm xử lý khi checkbox thay đổi
+  const handleCheckboxChange = (event) => {
+    setShowUploadInterface(event.target.checked); // Cập nhật state
+  };
+
+  // Hàm xử lý khi người dùng chọn tệp (di chuyển ra ngoài)
+  const handleFileChange = (event) => {
+    const files = Array.from(event.target.files);
+    const formData = new FormData();
+
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+
+    fetch(`${HOST}/utility/files`, {
+      method: "POST",
+      body: formData
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Tạo mảng mới chứa các object có cấu trúc tương tự dữ liệu từ server
+        const newFiles = data.files.map((file) => ({
+          name: file.file_name,
+          data: file.raw // Ở đây bạn có thể sử dụng raw data hoặc các thuộc tính khác tùy thuộc vào yêu cầu của bạn
+        }));
+
+        // Cập nhật state selectedFiles với mảng mới đã tạo
+        setSelectedFiles(newFiles);
+        setInputArray(newFiles);
+        alert(JSON.stringify(inputArray));
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("Error uploading files");
+      });
+  };
+
+  // Hàm xử lý xóa file khỏi danh sách đã chọn
+  const handleRemoveFile = (index) => {
+    const updatedFiles = [...selectedFiles];
+    updatedFiles.splice(index, 1);
+    setSelectedFiles(updatedFiles);
+  };
+  // Hàm xử lý việc thêm tài liệu từ các tệp đã chọn
+  const handleAddDocumentsFromFiles = async () => {};
   return (
     <div className="max-w-[1000px] mx-auto my-16 min-h-[800px]">
       <Helmet>
@@ -409,7 +532,10 @@ const Corpus = () => {
         </button>
       </div>
 
-      {showTable && (
+      {!selectedDocGroup?.id && (
+        <p className="text-center text-gray-600 mt-4">Vui lòng chọn nhóm ngữ liệu muốn hiển thị</p>
+      )}
+      {showTable && selectedDocGroup?.id && (
         <div>
           <h2>Danh Sách Tài Liệu:</h2>
           <div className="table-container">
@@ -550,46 +676,100 @@ const Corpus = () => {
         </div>
       )}
 
+      {/* Popup thêm tài liệu */}
       {isPopUpAddDoc && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-lg p-8 bg-white rounded-lg">
             <h2 className="mb-4 text-2xl font-semibold text-center">Thêm Tài Liệu Mới</h2>
-            {/* Input tiêu đề */}
+
+            {/* Checkbox */}
             <div className="mb-4">
-              <label className="block mb-2 text-gray-600">Tiêu đề:</label>
-              <input
-                type="text"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                className="w-full px-4 py-2 text-base text-gray-900 border border-gray-300 rounded-lg focus:ring-0"
-              />
+              <input type="checkbox" id="uploadCheckbox" onChange={handleCheckboxChange} />
+              <label htmlFor="uploadCheckbox" className="ml-2">
+                Tải file từ máy
+              </label>
             </div>
-            {/* Input nội dung */}
-            <div className="mb-4">
-              <label className="block mb-2 text-gray-600">Nội dung:</label>
-              <textarea
-                value={newContent}
-                onChange={(e) => setNewContent(e.target.value)}
-                className="w-full px-4 py-2 text-base text-gray-900 border border-gray-300 rounded-lg focus:ring-0 h-48"
-              ></textarea>
-            </div>
+
+            {/* Input tiêu đề và nội dung (chỉ hiển thị khi checkbox không được chọn) */}
+            {!showUploadInterface && (
+              <>
+                <div className="mb-4">
+                  <label className="block mb-2 text-gray-600">Tiêu đề:</label>
+                  <input
+                    type="text"
+                    value={newTitle}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                    className="w-full px-4 py-2 text-base text-gray-900 border border-gray-300 rounded-lg focus:ring-0"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-2 text-gray-600">Nội dung:</label>
+                  <textarea
+                    value={newContent}
+                    onChange={(e) => setNewContent(e.target.value)}
+                    className="w-full px-4 py-2 text-base text-gray-900 border border-gray-300 rounded-lg focus:ring-0 h-48"
+                  ></textarea>
+                </div>
+              </>
+            )}
+
+            {/* Giao diện tải lên tệp (chỉ hiển thị khi checkbox được chọn) */}
+            {showUploadInterface && (
+              <div className="flex flex-col justify-center w-4/5 ml-4">
+                <div className="w-full mb-8 border border-gray-200 rounded-lg bg-gray-50">
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    multiple
+                    className="w-full px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 resize-none focus:ring-0"
+                  />
+                  <div>
+                    {selectedFiles.map((file, index) => (
+                      <div key={index} className="flex items-center justify-between py-2 px-4 bg-gray-100">
+                        <span>{file.name}</span>
+                        <button
+                          className="text-blue-500 underline hover:text-red-500"
+                          onClick={() => handleRemoveFile(index)}
+                        >
+                          Xóa
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Hiển thị thông báo lỗi nếu có */}
             {errorMessage && <div className="mb-3 text-red-500">{errorMessage}</div>}
-            {/* Nút Hủy và Thêm */}
-            <div className="flex justify-end">
-              <button
-                onClick={handleCloseAddPopUpDoc}
-                className="px-4 py-2 mr-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300"
-              >
-                Hủy
-              </button>
+
+            {/* Nút Hủy */}
+            <button
+              onClick={handleCloseAddPopUpDoc}
+              className="px-4 py-2 mr-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300"
+            >
+              Hủy
+            </button>
+
+            {/* Nút Thêm (chỉ hiển thị khi không chọn upload file) */}
+            {!showUploadInterface && (
               <button
                 onClick={handleAddDocument}
                 className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
               >
                 Thêm
               </button>
-            </div>
+            )}
+
+            {/* Nút thêm từ file (chỉ hiển thị khi checkbox được chọn và có tệp được chọn) */}
+            {showUploadInterface && selectedFiles.length > 0 && (
+              <button
+                onClick={handleAddDocument}
+                className="px-4 py-2 mt-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+              >
+                Thêm File
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -685,6 +865,30 @@ const Corpus = () => {
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {/* Popup kết quả tải lên */}
+      {showUploadResultPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="w-full max-w-md p-8 bg-white rounded-lg">
+            <h2 className="mb-4 text-2xl font-semibold text-center">Kết Quả Tải Lên</h2>
+            {/* Render uploadResultMessage như một phần tử React */}
+            {uploadResultMessage}
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowUploadResultPopup(false)}
+                className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Overlay và spinner */}
+      {loading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
         </div>
       )}
     </div>

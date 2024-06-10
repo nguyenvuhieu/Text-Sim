@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Body, status, HTTPException
 from fastapi.encoders import jsonable_encoder
+from datetime import datetime
 from util import parse_text
 from models import corpus
 from config import Config
@@ -31,7 +32,7 @@ def delete_corpus(id: str):
 # Documents
 @router.post("/document", response_model=corpus.Document)
 def create_document(item: corpus.CreateDocumentRequest = Body(...)):
-    document = corpus.Document(corpus_id=item.corpus_id, title=item.title, text=parse_text(item.content))
+    document = corpus.Document(corpus_id=item.corpus_id, title=item.title, text=parse_text(item.content), created_at=datetime.now(), updated_at=datetime.now())
     res = DB().mongo[Config().COLLATION_DOCUMENT].insert_one(jsonable_encoder(document))
     created_item = DB().mongo[Config().COLLATION_DOCUMENT].find_one(
         {"_id": res.inserted_id}
@@ -40,7 +41,7 @@ def create_document(item: corpus.CreateDocumentRequest = Body(...)):
 
 @router.get("/{id}/documents")
 async def list_document_in_corpus(id:str, skip: int = 0, limit: int = 10) -> dict:
-    l = DB().mongo[Config().COLLATION_DOCUMENT].find({'corpus_id': id}).skip(skip).limit(limit)
+    l = DB().mongo[Config().COLLATION_DOCUMENT].find({'corpus_id': id}).sort('updated_at', -1).skip(skip).limit(limit)
     return {'documents': l}
 
 @router.get("/document/{id}", response_model=corpus.Document)
@@ -53,7 +54,7 @@ def get_document(id: str):
 def update_document(id: str, item: corpus.UpdateDocument = Body(...)):
     text = parse_text(item.content)
     DB().mongo[Config().COLLATION_DOCUMENT].update_one(
-        {"_id": id}, {"$set": {"title": item.title, "text": {"sentences": text.sentences, "paragraph_index": text.paragraph_index}}}
+        {"_id": id}, {"$set": {"title": item.title, "text": {"sentences": text.sentences, "paragraph_index": text.paragraph_index}, "updated_at": datetime.now()}}
     )
     if (existing_item := DB().mongo[Config().COLLATION_DOCUMENT].find_one({"_id": id})) is not None:
         print(existing_item)

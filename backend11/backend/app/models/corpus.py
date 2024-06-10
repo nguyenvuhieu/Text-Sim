@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from models import utility
+from typing import Any
 import uuid
 
 class Corpus(BaseModel):
@@ -11,6 +12,8 @@ class Document(BaseModel):
   corpus_id: str = Field(...)
   title: str = Field(...)
   text: utility.Text = Field(...)
+  updated_at: Any = None
+  created_at: Any = None
 
 class UpdateDocument(BaseModel):
   title: str = Field(...)

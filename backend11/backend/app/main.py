@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from routers import dataset, model, corpus, compare, utility
 from internal import DB
 from fastapi.middleware.cors import CORSMiddleware
+
 nltk.download('punkt')
 
 DB()
