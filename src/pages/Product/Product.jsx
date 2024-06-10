@@ -16,12 +16,6 @@ const MAXIMUM_NUMBER_OF_CHARACTERS = 10000;
 const MODEL_VIE = "paraphrase-multilingual-mpnet-base-v2";
 const MODEL_ENG = "all-MiniLM-L6-v2";
 const HOST = "http://127.0.0.1:8000";
-// Object ánh xạ giá trị ngôn ngữ sang tên đầy đủ
-const languageNames = {
-  VN: "Tiếng Việt",
-  EN: "Tiếng Anh",
-  ALL: "Tất cả"
-};
 
 const Product = () => {
   const { t } = useTranslation("product");
@@ -75,6 +69,12 @@ const Product = () => {
   const [activationResultMessage, setActivationResultMessage] = useState("");
   const [modelDescription, setModelDescription] = useState(""); // State lưu mô tả mô hình
 
+  // Object ánh xạ giá trị ngôn ngữ sang tên đầy đủ
+  const languageNames = {
+    VN: t("vietnamese"),
+    EN: t("english"),
+    ALL: t("all")
+  };
   // Tạo một instance Axios riêng
   const api = axios.create();
 
@@ -468,13 +468,13 @@ const Product = () => {
 
       // Hiển thị popup thông báo thành công
       setShowActivationResultPopup(true);
-      setActivationResultMessage(`Kích hoạt mô hình ${modelName} thành công`);
+      setActivationResultMessage(t("modelActivateSuccess", { modelName })); // Sử dụng i18n
     } catch (error) {
       console.error(`Lỗi khi kích hoạt mô hình ${modelName}:`, error);
 
       // Hiển thị popup thông báo thất bại
       setShowActivationResultPopup(true);
-      setActivationResultMessage(`Lỗi khi kích hoạt mô hình ${modelName}: ${error.message}`);
+      setActivationResultMessage(t("modelActivateFail", { modelName, errorMessage: error.message })); // Sử dụng i18n
     }
   };
 
@@ -1016,7 +1016,7 @@ const Product = () => {
                   onChange={() => setInputType1(inputType1 === "text" ? "file" : "text")}
                   className="mr-2"
                 />
-                <label htmlFor="upload1">Tải lên tệp</label>
+                <label htmlFor="upload1">{t("uploadFile")}</label>
               </div>
               <div className="w-full mb-8 border border-gray-200 rounded-lg bg-gray-50">
                 {inputType1 === "text" ? (
@@ -1054,7 +1054,7 @@ const Product = () => {
                             className="text-blue-500 underline hover:text-red-500"
                             onClick={() => handleRemoveFile1(1)}
                           >
-                            Xóa
+                            {t("delete")}
                           </button>
                         </div>
                       )}
@@ -1118,7 +1118,7 @@ const Product = () => {
                   onChange={() => setInputType2(inputType2 === "text" ? "file" : "text")}
                   className="mr-2"
                 />
-                <label htmlFor="upload1">Tải lên tệp</label>
+                <label htmlFor="upload1">{t("uploadFile")}</label>
               </div>
               <div className="w-full mb-8 border border-gray-200 rounded-lg bg-gray-50">
                 {inputType2 === "text" ? (
@@ -1156,7 +1156,7 @@ const Product = () => {
                             className="text-blue-500 underline hover:text-red-500"
                             onClick={() => handleRemoveFile1(2)}
                           >
-                            Xóa
+                            {t("delete")}
                           </button>
                         </div>
                       )}
@@ -1179,7 +1179,7 @@ const Product = () => {
                   onChange={() => setInputType3(inputType3 === "text" ? "file" : "text")}
                   className="mr-2"
                 />
-                <label htmlFor="upload1">Tải lên tệp</label>
+                <label htmlFor="upload1">{t("uploadFile")}</label>
               </div>
               <div className="w-full mb-8 border border-gray-200 rounded-lg bg-gray-50">
                 {inputType3 === "text" ? (
@@ -1217,7 +1217,7 @@ const Product = () => {
                             className="text-blue-500 underline hover:text-red-500"
                             onClick={() => handleRemoveFile1(3)}
                           >
-                            Xóa
+                            {t("delete")}
                           </button>
                         </div>
                       )}
@@ -1273,7 +1273,7 @@ const Product = () => {
                         className="text-blue-500 underline hover:text-red-500"
                         onClick={() => handleRemoveFile(index)}
                       >
-                        Xóa
+                        {t("delete")}
                       </button>
                     </div>
                   ))}
@@ -1294,7 +1294,7 @@ const Product = () => {
                   onChange={() => setInputType4(inputType4 === "text" ? "file" : "text")}
                   className="mr-2"
                 />
-                <label htmlFor="upload1">Tải lên tệp</label>
+                <label htmlFor="upload1">{t("uploadFile")}</label>
               </div>
               <div className="w-full mb-8 border border-gray-200 rounded-lg bg-gray-50">
                 {inputType4 === "text" ? (
@@ -1332,7 +1332,7 @@ const Product = () => {
                             className="text-blue-500 underline hover:text-red-500"
                             onClick={() => handleRemoveFile1(4)}
                           >
-                            Xóa
+                            {t("delete")}
                           </button>
                         </div>
                       )}
@@ -1378,7 +1378,7 @@ const Product = () => {
                   onChange={(e) => setSelectedCorpusId(e.target.value)}
                   className="w-full px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 resize-none focus:ring-0"
                 >
-                  {!selectedCorpusId && <option value="">-- Chọn corpus --</option>}
+                  {!selectedCorpusId && <option value="">{t("selectCorpus")}</option>}
                   {corpusList.map((corpus) => (
                     <option key={corpus._id} value={corpus._id}>
                       {corpus.name}
@@ -1404,9 +1404,7 @@ const Product = () => {
         // Nếu không có cặp câu tương đồng, hiển thị thông báo
         return (
           <div className="mb-18 items-center justify-center">
-            <p className="mb-3 text-xl font-bold text-center text-green-600">
-              Các văn bản này không tương đồng với nhau.
-            </p>
+            <p className="mb-3 text-xl font-bold text-center text-green-600">{t("noSimilarDocs")}</p>
           </div>
         );
       }
@@ -1415,7 +1413,7 @@ const Product = () => {
         <div className="mb-20 justify-center items-center">
           {!error && data && data.similarity !== undefined && (
             <p className="mb-3 text-xl font-bold text-center text-green-600">
-              Độ tương đồng giữa hai văn bản: {(parseFloat(data.similarity) * 100).toFixed(0)}%
+              {t("similarityOfText")} {(parseFloat(data.similarity) * 100).toFixed(0)}%
             </p>
           )}
 
@@ -1515,8 +1513,8 @@ const Product = () => {
                   {!clickv2 && !loadingCompare && (
                     <div>
                       <h6 className="mb-2 text-lg font-semibold">
-                        Độ tương đồng của văn bản: {(parseFloat(data_v2.similarity) * 100).toFixed(0)}%. Các tài liệu
-                        tương đồng:
+                        {t("similarityOfText")} {(parseFloat(data_v2.similarity) * 100).toFixed(0)}%.{" "}
+                        {t("similarDocuments")}
                       </h6>
                       <ul className="list-disc list-inside">
                         {similarFiles.map((file, index) => (
@@ -1536,7 +1534,7 @@ const Product = () => {
                     <div className="grid grid-cols-6 gap-1">
                       {/* Side Panel (Cột 1) */}
                       <div className="col-span-4 p-2">
-                        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">Độ tương đồng</h5>
+                        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{t("score")}</h5>
                         <div className="h-full overflow-y-auto rounded-lg p-4 flex flex-col items-center justify-center">
                           {selectedIdx !== null && pairsByFirst[selectedIdx] ? ( // Điều kiện hiển thị
                             <div className="w-full">
@@ -1561,7 +1559,7 @@ const Product = () => {
                               </div>
                             </div>
                           ) : (
-                            <div>Vui lòng chọn câu tương đồng để hiển thị</div> // Hiển thị thông báo khi chưa chọn câu
+                            <div>{t("selectSentenceToDisplay")}</div> // Hiển thị thông báo khi chưa chọn câu
                           )}
                         </div>
                       </div>
@@ -1569,7 +1567,7 @@ const Product = () => {
                       {/* Danh sách các câu tương đồng (Cột 2) */}
                       <div className="col-span-2 similar-sentences-list">
                         <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">
-                          Danh sách các câu tương đồng
+                          {t("similarSentencesList")}
                         </h5>
                         {pairsByFirst.map((result, index) => (
                           <div key={index} className="mb-2">
@@ -1613,9 +1611,7 @@ const Product = () => {
       if (!loadingCompare && !error && !hasPairs) {
         return (
           <div className="mb-18 items-center justify-center">
-            <p className="mb-3 text-xl font-bold text-center text-green-600">
-              Các văn bản này không tương đồng với nhau.
-            </p>
+            <p className="mb-3 text-xl font-bold text-center text-green-600">{t("noSimilarDocs")}</p>
           </div>
         );
       }
@@ -1648,8 +1644,8 @@ const Product = () => {
                 {!clickv3 && !loadingCompare && data_v3 && (
                   <div>
                     <h6 className="mb-2 text-lg font-semibold">
-                      Độ tương đồng của văn bản: {(parseFloat(data_v3.similarity) * 100).toFixed(0)}%. Các tài liệu
-                      tương đồng:
+                      {t("similarityOfText")} {(parseFloat(data_v3.similarity) * 100).toFixed(0)}%.{" "}
+                      {t("similarDocuments")}
                     </h6>
                     <ul className="list-disc list-inside">
                       {similarDocuments.map((doc) => (
@@ -1666,7 +1662,7 @@ const Product = () => {
                   <div className="grid grid-cols-6 gap-1">
                     {/* Side Panel (Cột 1) */}
                     <div className="col-span-4 p-2">
-                      <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">Độ tương đồng</h5>
+                      <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{t("score")}</h5>
                       <div className="h-full overflow-y-auto rounded-lg p-4 flex flex-col items-center justify-center">
                         {selectedIdx_v3 !== null && pairsByFirst_v3[selectedIdx_v3] ? (
                           <div className="w-full">
@@ -1682,7 +1678,7 @@ const Product = () => {
                             </div>
                           </div>
                         ) : (
-                          <div>Vui lòng chọn câu tương đồng để hiển thị</div>
+                          <div>{t("selectSentenceToDisplay")}</div>
                         )}
                       </div>
                     </div>
@@ -1690,7 +1686,7 @@ const Product = () => {
                     {/* Danh sách các câu tương đồng (Cột 2) */}
                     <div className="col-span-2 similar-sentences-list">
                       <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">
-                        Danh sách các câu tương đồng
+                        {t("similarSentencesList")}
                       </h5>
                       {pairsByFirst_v3.map((result, index) => (
                         <div key={index} className="mb-2">
@@ -1740,7 +1736,7 @@ const Product = () => {
       {/* Chọn chế độ */}
       <div className="flex items-center justify-center mb-4">
         <div className="text-left pr-4">
-          <p className="text-gray-600">Chọn chế độ</p>
+          <p className="text-gray-600">{t("selectMode")}</p>
         </div>
         <select
           value={mode}
@@ -1752,15 +1748,15 @@ const Product = () => {
           }}
           className="block w-1/8 px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 rounded-lg focus:ring-0 "
         >
-          <option value="1">Chế độ so sánh 1 - 1</option>
-          <option value="2">Chế độ 1 - nhiều</option>
-          <option value="3">Chế độ 1 - kho ngữ liệu</option>
+          <option value="1">{t("compareMode1")}</option>
+          <option value="2">{t("compareMode2")}</option>
+          <option value="3">{t("compareMode3")}</option>
         </select>
       </div>
 
       <div className="flex items-center justify-center mb-4">
         <div className="text-left pr-4">
-          <p className="text-gray-600">Chọn ngôn ngữ so sánh</p>
+          <p className="text-gray-600">{t("selectLanguage")}</p>
         </div>
         <select
           id="languageSelect"
@@ -1777,7 +1773,7 @@ const Product = () => {
       </div>
       <div className="flex items-center justify-center mb-4">
         <div className="text-left pr-4">
-          <p className="text-gray-600">Chọn mô hình</p>
+          <p className="text-gray-600">{t("selectModel")}</p>
         </div>
         <select
           id="modelSelect"
@@ -1785,7 +1781,7 @@ const Product = () => {
           onChange={handleModelChange}
           className="block w-1/8 px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 rounded-lg focus:ring-0 "
         >
-          {!selectedModel && <option>--Vui lòng chọn model để kích hoạt--</option>}
+          {!selectedModel && <option>{t("selectModelToActivate")}</option>}
           {configData?.models
             .filter((model) => model.language === selectedLanguage || model.language === "ALL")
             .map((model) => (
@@ -1818,14 +1814,14 @@ const Product = () => {
       {showActivationResultPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-md p-8 bg-white rounded-lg">
-            <h2 className="mb-4 text-2xl font-semibold text-center">Kết Quả Kích Hoạt Mô Hình</h2>
+            <h2 className="mb-4 text-2xl font-semibold text-center">{t("modelActivationResult")}</h2>
             <p className="mb-4 text-center">{activationResultMessage}</p>
             <div className="flex justify-end">
               <button
                 onClick={() => setShowActivationResultPopup(false)}
                 className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
               >
-                Đóng
+                {t("close")}
               </button>
             </div>
           </div>
@@ -1874,7 +1870,7 @@ const Product = () => {
                 </li>
               </ul>
             </div>
-            <span>Loading</span>
+            <span>{t("loading")}</span>
           </div>
         </div>
       )}

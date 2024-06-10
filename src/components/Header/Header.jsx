@@ -121,11 +121,16 @@ const Header = () => {
               <li key={page.name}>
                 <NavLink
                   to={page.href}
-                  className={({ isActive }) =>
-                    `text-sm font-medium text-gray-900 hover:text-blue-700 dark:hover:text-blue-500 ${
-                      isActive ? "text-blue-500 dark:text-blue-700" : "text-gray-900 dark:text-gray-300"
-                    }`
+                  style={({ isActive }) =>
+                    isActive
+                      ? {
+                          backgroundColor: "lightblue",
+                          padding: "20px",
+                          borderRadius: "5px"
+                        }
+                      : {}
                   }
+                  className="text-sm font-medium text-gray-900 hover:text-blue-700 dark:hover:text-blue-500"
                 >
                   {page.name}
                 </NavLink>

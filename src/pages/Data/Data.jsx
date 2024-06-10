@@ -82,7 +82,7 @@ const Data = () => {
 
       setDataGroups(data.datasets);
     } catch (error) {
-      alert("Error fetching data:", error);
+      alert(t("errorFetchingData"), error);
     }
   };
 
@@ -91,7 +91,7 @@ const Data = () => {
       const response = await api.get(`${HOST}/dataset/${selectedDataGroup.id}/records?skip=0&limit=10`);
       setDatasets(response.data.documents);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error(t("errorFetchingData"), error);
     }
   };
 
@@ -123,14 +123,14 @@ const Data = () => {
     if (selectedDataGroup.similarity_type === "COS_SIM") {
       let value = parseFloat(e.target.value);
       if (isNaN(value) || value < 0 || value > 1) {
-        setErrorMessage("Giá trị điểm tương đồng không hợp lệ (0 - 1).");
+        setErrorMessage(t("invalidSimilarityValue") + "(0 - 1)");
         return;
       }
       setSimilarityLabel(value);
     } else if (selectedDataGroup.similarity_type === "LEVEL") {
       let value = parseInt(e.target.value, 10); // Chuyển sang số nguyên
       if (isNaN(value) || value < 0 || value > 5) {
-        setErrorMessage("Giá trị điểm tương đồng không hợp lệ (0 - 5).");
+        setErrorMessage(t("invalidSimilarityValue") + "(0 - 5)");
         return;
       }
       setSimilarityLabel(value);
@@ -157,7 +157,7 @@ const Data = () => {
     try {
       // Kiểm tra các trường input1 và input2
       if (!inputs1 || !inputs2 || similarityLabel === "") {
-        setErrorMessage("Vui lòng điền đầy đủ thông tin.");
+        setErrorMessage(t("enterFullInformation"));
         setIsAddDataPopup(true);
         return;
       }
@@ -176,7 +176,7 @@ const Data = () => {
       // Sau khi thêm dữ liệu thành công, bạn có thể gọi lại hàm fetchData để cập nhật dữ liệu
       fetchData();
     } catch (error) {
-      console.error("Error adding data:", error);
+      console.error(t("errorAddingData"), error);
       setErrorMessage(error.message);
       // Hiển thị popup lỗi
     }
@@ -215,7 +215,7 @@ const Data = () => {
       setShowExportPopup(true);
       setErrorMessage(null);
     } catch (error) {
-      console.error("Error exporting data:", error);
+      console.error(t("errorExportingData"), error);
       setShowExportPopup(true);
       setErrorMessage(error.message);
     }
@@ -234,14 +234,14 @@ const Data = () => {
     let editSimilarityValue = editSimilarity; // Biến tạm để lưu giá trị editSimilarity trước khi chuyển đổi
 
     if (!editFirstSentence || !editSecondSentence || editSimilarity === "") {
-      setErrorMessage("Vui lòng nhập đầy đủ thông tin cho tất cả các trường.");
+      setErrorMessage(t("enterFullInformationAllFields"));
       hasError = true;
     } else {
       switch (selectedDataGroup.similarity_type) {
         case "COS_SIM":
           editSimilarityValue = parseFloat(editSimilarity);
           if (isNaN(editSimilarityValue) || editSimilarityValue < 0 || editSimilarityValue > 1) {
-            setErrorMessage("Điểm COS_SIM phải nằm trong khoảng từ 0 đến 1.");
+            setErrorMessage(t("invalidCosSimRange"));
             hasError = true;
           }
           break;
@@ -251,7 +251,7 @@ const Data = () => {
           } // Chuyển đổi sang số nguyên
           if (editSimilarityValue > 5) {
             // Kiểm tra giá trị hợp lệ
-            setErrorMessage("Điểm LEVEL phải là số nguyên từ 0 đến 5.");
+            setErrorMessage(t("invalidLevelRange"));
             hasError = true;
           }
           break;
@@ -260,7 +260,7 @@ const Data = () => {
           editSimilarityValue = editSimilarity === "true";
           break;
         default:
-          setErrorMessage("Loại similarity không hợp lệ.");
+          setErrorMessage(t("invalidSimilarityType"));
           hasError = true;
       }
     }
@@ -283,7 +283,7 @@ const Data = () => {
       setErrorMessage("");
       setIsPopUpEditData(false);
     } catch (error) {
-      setErrorMessage("Xảy ra lỗi trong quá trình chỉnh sửa");
+      setErrorMessage(t("errorEditing"));
     }
   };
 
@@ -301,7 +301,7 @@ const Data = () => {
       setIsPopUpDelData(false);
       setEditDataIndex(null);
     } catch (error) {
-      console.error("Error deleting data:", error);
+      console.error(t("errorDeletingData"), error);
     }
   };
   const handleDataGroupChange = (event) => {
@@ -324,27 +324,6 @@ const Data = () => {
     setErrorMessage("");
   };
 
-  const handleCreateGroup1 = async () => {
-    if (!newGroupName || !newGroupScoreType) {
-      setErrorMessage("*Tên nhóm và loại điểm không được để trống.");
-      return;
-    }
-
-    try {
-      const newGroup = {
-        name: newGroupName,
-        score_type: newGroupScoreType
-      };
-
-      await api.post(`${HOST}/dataset`, newGroup);
-      fetchData();
-      setIsPopUpAddGroup(false);
-      setErrorMessage("");
-    } catch (error) {
-      console.error("Error creating new group:", error);
-      setErrorMessage("*Lỗi khi tạo nhóm mới: " + error.response.data.detail);
-    }
-  };
   const handleCreateGroup = async () => {
     if (!newGroupName || !selectedLanguage || !selectedSimilarity) {
       setErrorMessage("*Vui lòng điền đầy đủ thông tin.");
@@ -364,14 +343,14 @@ const Data = () => {
       setErrorMessage("");
     } catch (error) {
       console.error("Error creating new group:", error);
-      setErrorMessage("*Lỗi khi tạo nhóm mới: " + error.response.data.detail);
+      setErrorMessage(t("errorCreatingNewGroup") + error.response.data.detail);
     }
   };
   const handleDeleteGroup = async () => {
     // Kiểm tra xem đã chọn nhóm để xóa chưa
     if (!selectedDataGroup.id) {
       // Nếu chưa chọn nhóm, hiển thị thông báo lỗi và không thực hiện xóa
-      setErrorMessage("Vui lòng chọn nhóm để xóa.");
+      setErrorMessage(t("selectGroupToDelete"));
       return;
     }
 
@@ -386,7 +365,7 @@ const Data = () => {
       console.error("Error deleting group:", error);
       // Xảy ra lỗi khi xóa nhóm dữ liệu
       // Xử lý lỗi ở đây, ví dụ hiển thị thông báo lỗi
-      setErrorMessage("Lỗi khi xóa nhóm: " + error.response.data.detail);
+      setErrorMessage(t("errorDeletingGroup") + error.response.data.detail);
     }
   };
   const handleDataGroupChangeButton = (selectedGroupId) => {
@@ -402,7 +381,6 @@ const Data = () => {
     <div className="max-w-[1000px] mx-auto my-16 min-h-[800px]">
       <Helmet>
         <title>{t("titlePage")}</title>
-        <meta name="description" content="Trang chủ dự án TextSim" />
       </Helmet>
       <div className="p-8">
         <div className="flex items-center justify-center">
@@ -413,14 +391,14 @@ const Data = () => {
 
       <div className="flex items-center justify-center mb-4">
         <div className="text-left pr-4">
-          <p className="text-gray-600">Chọn nhóm dữ liệu</p>
+          <p className="text-gray-600">{t("selectDataGroup")}</p>
         </div>
         <select
           value={selectedDataGroup.id}
           onChange={handleDataGroupChange}
           className="block w-1/8 px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 rounded-lg focus:ring-0"
         >
-          {!selectedDataGroup.id && <option value={null}>--Chọn nhóm--</option>}
+          {!selectedDataGroup.id && <option value={null}>{t("selectGroup")}</option>}
           {datagroups.map((group) => (
             <option key={group._id} value={group._id}>
               {group.name}
@@ -439,18 +417,16 @@ const Data = () => {
           onClick={() => setIsPopUpAddGroup(true)}
           className="px-4 py-2 ml-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
         >
-          Thêm nhóm
+          {t("addGroup")}
         </button>
         <button
           onClick={() => setIsPopUpDelGroup(true)}
           className="px-4 py-2 ml-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
         >
-          Xoá nhóm
+          {t("deleteGroup")}
         </button>
       </div>
-      {!selectedDataGroup?.id && (
-        <p className="text-center text-gray-600 mt-4">Vui lòng chọn nhóm dữ liệu muốn hiển thị</p>
-      )}
+      {!selectedDataGroup?.id && <p className="text-center text-gray-600 mt-4">{t("pleaseSelectGroup")}</p>}
       {selectedDataGroup?.id && (
         <div className="flex items-center justify-center">
           <div className="flex flex-col justify-center w-2/5 mr-4">
@@ -500,7 +476,7 @@ const Data = () => {
       {selectedDataGroup?.id && (
         <div className="flex items-center justify-center mb-4">
           <div className="text-left pr-4">
-            <p className="text-gray-600">Nhập độ tương đồng:</p>
+            <p className="text-gray-600">{t("enterSimilarity")}</p>
           </div>
 
           {selectedDataGroup.similarity_type === "COS_SIM" && (
@@ -543,28 +519,28 @@ const Data = () => {
             onClick={handleAddData}
             className="px-4 py-2 mx-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
           >
-            Thêm dữ liệu
+            {t("addData")}
           </button>
           <button
             onClick={handleExportData}
             className="px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600"
           >
-            Xuất file dữ liệu
+            {t("exportData")}
           </button>
         </div>
       )}
       {showTable && selectedDataGroup?.id && (
         <>
           <div className="table-container">
-            <h2>Bảng dữ liệu các câu tương đồng</h2>
+            <h2>{t("similarityDataTable")}</h2>
             <div className="table-wrapper">
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th className="first-sentence-column">First Sentence</th>
-                    <th className="second-sentence-column">Second Sentence</th>
-                    <th className="score-column">Score</th>
-                    <th className="task-header">Tác vụ</th>
+                    <th className="first-sentence-column">{t("firstSentence")}</th>
+                    <th className="second-sentence-column">{t("secondSentence")}</th>
+                    <th className="score-column">{t("score")}</th>
+                    <th className="task-header">{t("task")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -583,10 +559,10 @@ const Data = () => {
                       </td>
                       <td className="task-buttons">
                         <button className="action-button" onClick={() => handleUpdateClick(index)}>
-                          Chỉnh sửa
+                          {t("edit")}
                         </button>
                         <button className="action-button" onClick={() => handleDeleteClick(index)}>
-                          Xóa
+                          {t("delete")}
                         </button>
                       </td>
                     </tr>
@@ -602,11 +578,11 @@ const Data = () => {
           <div className="w-full max-w-lg p-8 bg-white rounded-lg">
             {/* Trường nhập tên nhóm */}
             <div className="mb-4">
-              <label className="block mb-2 text-gray-600">Tên Nhóm:</label>
+              <label className="block mb-2 text-gray-600">{t("groupName")}</label>
               <input
                 type="text"
                 value={newGroupName}
-                placeholder="Nhập tên nhóm..."
+                placeholder={t("enterGroupNamePlaceholder")}
                 onChange={(e) => setNewGroupName(e.target.value)}
                 className="w-full px-4 py-2 text-base text-gray-900 border border-gray-300 rounded-lg focus:ring-0"
               />
@@ -614,7 +590,7 @@ const Data = () => {
 
             {/* Trường chọn ngôn ngữ */}
             <div className="mb-4">
-              <label className="block mb-2 text-gray-600">Ngôn ngữ:</label>
+              <label className="block mb-2 text-gray-600">{t("language")}</label>
               <select
                 value={selectedLanguage}
                 onChange={(e) => setSelectedLanguage(e.target.value)}
@@ -628,7 +604,7 @@ const Data = () => {
 
             {/* Trường chọn loại so sánh */}
             <div className="mb-4">
-              <label className="block mb-2 text-gray-600">Loại So Sánh:</label>
+              <label className="block mb-2 text-gray-600">{t("similarityType")}</label>
               <select
                 value={selectedSimilarity}
                 onChange={(e) => setSelectedSimilarity(e.target.value)}
@@ -645,13 +621,13 @@ const Data = () => {
                 onClick={() => handlePopUpClose()}
                 className="px-4 py-2 mr-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300"
               >
-                Hủy
+                {t("cancel")}
               </button>
               <button
                 onClick={handleCreateGroup}
                 className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
               >
-                Tạo
+                {t("create")}
               </button>
             </div>
           </div>
@@ -661,20 +637,20 @@ const Data = () => {
       {IsPopUpDelGroup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-lg p-8 bg-white rounded-lg">
-            <h2 className="mb-4 text-2xl font-semibold text-center">Xóa Nhóm Dữ Liệu</h2>
-            <p className="mb-4 text-center">Bạn có chắc chắn muốn xóa nhóm dữ liệu này?</p>
+            <h2 className="mb-4 text-2xl font-semibold text-center">{t("deleteDataGroup")}</h2>
+            <p className="mb-4 text-center">{t("confirmDeleteDataGroup")}</p>
             <div className="flex justify-end">
               <button
                 onClick={() => setIsPopUpDelGroup(false)}
                 className="px-4 py-2 mr-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300"
               >
-                Hủy
+                {t("cancel")}
               </button>
               <button
                 onClick={handleDeleteGroup}
                 className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
               >
-                Xóa
+                {t("delete")}
               </button>
             </div>
           </div>
@@ -683,9 +659,9 @@ const Data = () => {
       {isPopUpEditData && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-lg p-8 bg-white rounded-lg">
-            <h2 className="mb-4 text-2xl font-semibold text-center">Sửa Dữ Liệu</h2>
+            <h2 className="mb-4 text-2xl font-semibold text-center">{t("editData")}</h2>
             <div className="mb-4">
-              <label className="block mb-2 text-gray-600">Câu 1</label>
+              <label className="block mb-2 text-gray-600">{t("sentence1")}</label>
               <input
                 type="text"
                 value={editFirstSentence}
@@ -694,7 +670,7 @@ const Data = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block mb-2 text-gray-600">Câu 2</label>
+              <label className="block mb-2 text-gray-600">{t("sentence2")}</label>
               <input
                 type="text"
                 value={editSecondSentence}
@@ -703,7 +679,7 @@ const Data = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block mb-2 text-gray-600">Điểm</label>
+              <label className="block mb-2 text-gray-600">{t("score")}</label>
               {selectedDataGroup.similarity_type === "COS_SIM" && (
                 <input
                   type="number"
@@ -751,13 +727,13 @@ const Data = () => {
                 }}
                 className="px-4 py-2 mr-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300"
               >
-                Hủy
+                {t("cancel")}
               </button>
               <button
                 onClick={handleSaveClick}
                 className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
               >
-                Lưu
+                {t("save")}
               </button>
             </div>
           </div>
@@ -767,20 +743,20 @@ const Data = () => {
       {isPopUpDelData && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-lg p-8 bg-white rounded-lg">
-            <h2 className="mb-4 text-2xl font-semibold text-center">Xóa Dữ Liệu</h2>
-            <p className="mb-4 text-center">Bạn có chắc chắn muốn xóa dữ liệu này không?</p>
+            <h2 className="mb-4 text-2xl font-semibold text-center">{t("deleteData")}</h2>
+            <p className="mb-4 text-center">{t("confirmDeleteData")}</p>
             <div className="flex justify-end">
               <button
                 onClick={() => setIsPopUpDelData(false)}
                 className="px-4 py-2 mr-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300"
               >
-                Hủy
+                {t("cancel")}
               </button>
               <button
                 onClick={handleConfirmDelete}
                 className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
               >
-                Xóa
+                {t("delete")}
               </button>
             </div>
           </div>
@@ -790,7 +766,7 @@ const Data = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-sm p-6 bg-white rounded-lg">
             <h2 className={`mb-4 text-lg font-semibold ${errorMessage ? "text-red-600" : "text-green-600"}`}>
-              {errorMessage ? errorMessage : "Thêm dữ liệu thành công"}
+              {errorMessage ? errorMessage : t("addDataSuccess")}
             </h2>
             <button
               onClick={() => {
@@ -802,7 +778,7 @@ const Data = () => {
                 errorMessage ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
               } rounded-lg`}
             >
-              Đóng
+              {t("close")}
             </button>
           </div>
         </div>
@@ -812,7 +788,7 @@ const Data = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-sm p-6 bg-white rounded-lg">
             <h2 className={`mb-4 text-lg font-semibold ${errorMessage ? "text-red-600" : "text-green-600"}`}>
-              {errorMessage ? errorMessage : "Xuất file thành công"}
+              {errorMessage ? errorMessage : t("exportFileSuccess")}
             </h2>
             <button
               onClick={() => {
@@ -823,7 +799,7 @@ const Data = () => {
                 errorMessage ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
               } rounded-lg`}
             >
-              Đóng
+              {t("close")}
             </button>
           </div>
         </div>

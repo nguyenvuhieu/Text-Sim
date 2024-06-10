@@ -73,7 +73,7 @@ const Corpus = () => {
     } catch (error) {
       console.error("Error fetching document groups:", error);
       setSelectedDocGroup(null); // Đặt selectedDocGroup thành null khi có lỗi
-      setErrorMessage("Lỗi khi tải danh sách nhóm tài liệu.");
+      setErrorMessage(t("errorLoadingDocumentGroups"));
     }
   }, []);
 
@@ -85,7 +85,7 @@ const Corpus = () => {
   // Fetch document groups
   const fetchDocumentGroups = async () => {
     try {
-      const { data } = await api.get("http://127.0.0.1:8000/corpus");
+      const { data } = await api.get(`${HOST}/corpus`);
       setDocumentGroups(data.corpus);
     } catch (error) {
       console.error("Error fetching document groups:", error);
@@ -102,7 +102,7 @@ const Corpus = () => {
           setShowTable(true); // Hiển thị bảng sau khi fetch
         } else {
           console.error("Invalid response data:", response.data);
-          setErrorMessage("Dữ liệu phản hồi không hợp lệ.");
+          setErrorMessage(t("invalidResponseData"));
         }
       } else {
         setShowTable(false); // Ẩn bảng nếu không có nhóm nào được chọn
@@ -199,7 +199,7 @@ const Corpus = () => {
 
   const handleCreateGroup = async () => {
     if (!newGroupName) {
-      setErrorMessage("Vui lòng nhập tên nhóm.");
+      setErrorMessage(t("enterGroupName"));
       return;
     }
 
@@ -208,12 +208,12 @@ const Corpus = () => {
         name: newGroupName
       };
 
-      await api.post(`${HOST}/corpus", newGroup`);
+      await api.post(`${HOST}/corpus`, newGroup);
       fetchDocumentGroups(); // Refresh danh sách nhóm tài liệu
       handleCloseAddPopup();
     } catch (error) {
       console.error("Error creating new group:", error);
-      setErrorMessage("Lỗi khi tạo nhóm mới: " + error.response.data.detail);
+      setErrorMessage(t("errorCreatingNewGroup") + error.response.data.detail);
     }
   };
 
@@ -234,7 +234,7 @@ const Corpus = () => {
       handleCloseEditPopup();
     } catch (error) {
       console.error("Error updating group:", error);
-      setErrorMessage("Lỗi khi cập nhật nhóm: " + error.response.data.detail);
+      setErrorMessage(t("errorUpdatingGroup") + error.response.data.detail);
     }
   };
 
@@ -246,7 +246,7 @@ const Corpus = () => {
       handleCloseDeletePopup();
     } catch (error) {
       console.error("Error deleting group:", error);
-      setErrorMessage("Lỗi khi xóa nhóm: " + error.response.data.detail);
+      setErrorMessage(t("errorDeletingGroup") + error.response.data.detail);
     }
   };
 
@@ -273,7 +273,7 @@ const Corpus = () => {
       } else if (!showUploadInterface) {
         // Xử lý trường hợp nhập thủ công
         if (!newTitle || !newContent) {
-          setErrorMessage("Vui lòng điền đầy đủ thông tin.");
+          setErrorMessage(t("enterFullInformation"));
           return;
         }
         const newDocument = {
@@ -283,7 +283,7 @@ const Corpus = () => {
         };
         await api.post(`${HOST}/corpus/document`, newDocument);
       } else {
-        setErrorMessage("Chưa có tệp nào được chọn.");
+        setErrorMessage(t("noFilesSelected"));
         return;
       }
 
@@ -295,18 +295,28 @@ const Corpus = () => {
       if (addedDocuments.length > 0 || failedDocuments.length > 0) {
         setShowUploadResultPopup(true);
         setUploadResultMessage(
-          <div
-            dangerouslySetInnerHTML={{
-              __html:
-                (addedDocuments.length > 0
-                  ? "Thêm thành công các tài liệu:<br />" + addedDocuments.map((name) => `• ${name}`).join("<br />")
-                  : "") +
-                (failedDocuments.length > 0
-                  ? "<br />Thêm thất bại các tài liệu:<br />" +
-                    failedDocuments.map((name) => `• ${name}`).join("<br />")
-                  : "")
-            }}
-          />
+          <div>
+            {addedDocuments.length > 0 && (
+              <>
+                <p>{t("addDocumentSuccess")}</p>
+                <ul>
+                  {addedDocuments.map((name) => (
+                    <li key={name}>• {name}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+            {failedDocuments.length > 0 && (
+              <>
+                <p>{t("addDocumentFail")}</p>
+                <ul>
+                  {failedDocuments.map((name) => (
+                    <li key={name}>• {name}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
         );
       }
     } catch (error) {
@@ -431,7 +441,7 @@ const Corpus = () => {
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error(t("networkResponseNotOk"));
         }
         return response.json();
       })
@@ -445,11 +455,9 @@ const Corpus = () => {
         // Cập nhật state selectedFiles với mảng mới đã tạo
         setSelectedFiles(newFiles);
         setInputArray(newFiles);
-        alert(JSON.stringify(inputArray));
       })
       .catch((error) => {
         console.error("Error:", error);
-        alert("Error uploading files");
       });
   };
 
@@ -459,13 +467,11 @@ const Corpus = () => {
     updatedFiles.splice(index, 1);
     setSelectedFiles(updatedFiles);
   };
-  // Hàm xử lý việc thêm tài liệu từ các tệp đã chọn
-  const handleAddDocumentsFromFiles = async () => {};
+
   return (
     <div className="max-w-[1000px] mx-auto my-16 min-h-[800px]">
       <Helmet>
         <title>{t("titlePage")}</title>
-        <meta name="description" content="Trang quản lý Corpus" />
       </Helmet>
 
       <div className="p-8">
@@ -478,7 +484,7 @@ const Corpus = () => {
       {/* Chọn Nhóm Tài Liệu */}
       <div className="flex items-center justify-center mb-4">
         <div className="text-left pr-4">
-          <p className="text-gray-600">Chọn nhóm tài liệu:</p>
+          <p className="text-gray-600">{t("selectDocumentGroup")}</p>
         </div>
 
         <select
@@ -486,7 +492,7 @@ const Corpus = () => {
           onChange={handleDocGroupChange}
           className="block w-1/8 px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 rounded-lg focus:ring-0"
         >
-          {!selectedDocGroup.id && <option value={null}>--Chọn nhóm--</option>}
+          {!selectedDocGroup.id && <option value={null}>{t("selectGroup")}</option>}
           {documentGroups.map((group) => (
             <option key={group._id} value={group._id}>
               {group.name}
@@ -498,7 +504,7 @@ const Corpus = () => {
           onClick={handleOpenAddPopup}
           className="px-4 py-2 ml-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
         >
-          Thêm Nhóm
+          {t("addGroup")}
         </button>
 
         {/* Nút Xóa Nhóm Tài Liệu (chỉ hiển thị khi có nhóm được chọn) */}
@@ -509,7 +515,7 @@ const Corpus = () => {
             }
             className="px-4 py-2 ml-4 text-white bg-red-500 rounded-lg hover:bg-red-600"
           >
-            Xóa Nhóm
+            {t("deleteGroup")}
           </button>
         )}
 
@@ -519,7 +525,7 @@ const Corpus = () => {
             onClick={() => setIsPopUpAddDoc(true)}
             className="px-4 py-2 ml-4 text-white bg-green-500 rounded-lg hover:bg-green-600"
           >
-            Thêm Tài Liệu
+            {t("addDocument")}
           </button>
         )}
 
@@ -528,23 +534,21 @@ const Corpus = () => {
           onClick={handleExportData}
           className="px-4 py-2 ml-4 text-white bg-purple-500 rounded-lg hover:bg-purple-600"
         >
-          Xuất file dữ liệu{" "}
+          {t("exportData")}{" "}
         </button>
       </div>
 
-      {!selectedDocGroup?.id && (
-        <p className="text-center text-gray-600 mt-4">Vui lòng chọn nhóm ngữ liệu muốn hiển thị</p>
-      )}
+      {!selectedDocGroup?.id && <p className="text-center text-gray-600 mt-4">{t("selectCorpusToDisplay")}</p>}
       {showTable && selectedDocGroup?.id && (
         <div>
-          <h2>Danh Sách Tài Liệu:</h2>
+          <h2>{t("documentList")}</h2>
           <div className="table-container">
             <table className="data-table">
               <thead>
                 <tr>
-                  <th className="title-column">Tiêu đề</th>
-                  <th className="content-column">Nội dung</th>
-                  <th className="task-header">Tác vụ</th>
+                  <th className="title-column">{t("title")}</th>
+                  <th className="content-column">{t("content")}</th>
+                  <th className="task-header">{t("task")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -561,7 +565,7 @@ const Corpus = () => {
                               <p>{formatCorpusText(document.text, 5)}...</p>
                               {document.text.sentences.length > 5 && (
                                 <button className="toggle-button" onClick={() => handleOpenContentPopup(document)}>
-                                  Xem thêm
+                                  {t("viewMore")}
                                 </button>
                               )}
                             </>
@@ -570,10 +574,10 @@ const Corpus = () => {
                       </td>
                       <td className="task-buttons">
                         <button className="action-button" onClick={() => handleOpenEditPopUpDoc(index)}>
-                          Chỉnh sửa
+                          {t("edit")}
                         </button>
                         <button className="action-button" onClick={() => handleOpenDeletePopUpDoc(index)}>
-                          Xóa
+                          {t("delete")}
                         </button>
                       </td>
                     </tr>
@@ -589,7 +593,7 @@ const Corpus = () => {
       {isPopUpAddGroup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-lg p-8 bg-white rounded-lg">
-            <h2 className="mb-4 text-2xl font-semibold text-center">Thêm Nhóm Tài Liệu</h2>
+            <h2 className="mb-4 text-2xl font-semibold text-center">{t("addGroupDocument")}</h2>
             <div className="mb-4">
               <label className="block mb-2 text-gray-600">Tên Nhóm:</label>
               <input
@@ -605,13 +609,13 @@ const Corpus = () => {
                 onClick={handleCloseAddPopup}
                 className="px-4 py-2 mr-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300"
               >
-                Hủy
+                {t("cancel")}
               </button>
               <button
                 onClick={handleCreateGroup}
                 className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
               >
-                Tạo
+                {t("create")}
               </button>
             </div>
           </div>
@@ -622,7 +626,7 @@ const Corpus = () => {
       {isPopUpEditGroup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-lg p-8 bg-white rounded-lg">
-            <h2 className="mb-4 text-2xl font-semibold text-center">Chỉnh Sửa Nhóm Tài Liệu</h2>
+            <h2 className="mb-4 text-2xl font-semibold text-center">{t("editGroupDocument")}</h2>
             <div className="mb-4">
               <label className="block mb-2 text-gray-600">Tên Nhóm:</label>
               <input
@@ -638,13 +642,13 @@ const Corpus = () => {
                 onClick={handleCloseEditPopup}
                 className="px-4 py-2 mr-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300"
               >
-                Hủy
+                {t("cancel")}
               </button>
               <button
                 onClick={handleEditGroup}
                 className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
               >
-                Lưu
+                {t("save")}
               </button>
             </div>
           </div>
@@ -655,21 +659,21 @@ const Corpus = () => {
       {isPopUpDeleteGroup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-lg p-8 bg-white rounded-lg">
-            <h2 className="mb-4 text-2xl font-semibold text-center">Xóa Nhóm Tài Liệu</h2>
-            <p className="mb-4 text-center">Bạn có chắc chắn muốn xóa nhóm tài liệu này?</p>
+            <h2 className="mb-4 text-2xl font-semibold text-center">{t("deleteGroupDocument")}</h2>
+            <p className="mb-4 text-center">{t("confirmDeleteGroupDocument")}</p>
             {errorMessage && <div className="mb-3 text-red-500">{errorMessage}</div>}
             <div className="flex justify-end">
               <button
                 onClick={handleCloseDeletePopup}
                 className="px-4 py-2 mr-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300"
               >
-                Hủy
+                {t("cancel")}
               </button>
               <button
                 onClick={handleDeleteGroup}
                 className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
               >
-                Xóa
+                {t("delete")}
               </button>
             </div>
           </div>
@@ -680,13 +684,13 @@ const Corpus = () => {
       {isPopUpAddDoc && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-lg p-8 bg-white rounded-lg">
-            <h2 className="mb-4 text-2xl font-semibold text-center">Thêm Tài Liệu Mới</h2>
+            <h2 className="mb-4 text-2xl font-semibold text-center">{t("addNewDocument")}</h2>
 
             {/* Checkbox */}
             <div className="mb-4">
               <input type="checkbox" id="uploadCheckbox" onChange={handleCheckboxChange} />
               <label htmlFor="uploadCheckbox" className="ml-2">
-                Tải file từ máy
+                {t("uploadFileFromDevice")}
               </label>
             </div>
 
@@ -694,7 +698,7 @@ const Corpus = () => {
             {!showUploadInterface && (
               <>
                 <div className="mb-4">
-                  <label className="block mb-2 text-gray-600">Tiêu đề:</label>
+                  <label className="block mb-2 text-gray-600">{t("title")}</label>
                   <input
                     type="text"
                     value={newTitle}
@@ -703,7 +707,7 @@ const Corpus = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block mb-2 text-gray-600">Nội dung:</label>
+                  <label className="block mb-2 text-gray-600">{t("content")}:</label>
                   <textarea
                     value={newContent}
                     onChange={(e) => setNewContent(e.target.value)}
@@ -731,7 +735,7 @@ const Corpus = () => {
                           className="text-blue-500 underline hover:text-red-500"
                           onClick={() => handleRemoveFile(index)}
                         >
-                          Xóa
+                          {t("delete")}
                         </button>
                       </div>
                     ))}
@@ -748,7 +752,7 @@ const Corpus = () => {
               onClick={handleCloseAddPopUpDoc}
               className="px-4 py-2 mr-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300"
             >
-              Hủy
+              {t("cancel")}
             </button>
 
             {/* Nút Thêm (chỉ hiển thị khi không chọn upload file) */}
@@ -757,7 +761,7 @@ const Corpus = () => {
                 onClick={handleAddDocument}
                 className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
               >
-                Thêm
+                {t("add")}
               </button>
             )}
 
@@ -767,7 +771,7 @@ const Corpus = () => {
                 onClick={handleAddDocument}
                 className="px-4 py-2 mt-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
               >
-                Thêm File
+                {t("addFile")}
               </button>
             )}
           </div>
@@ -777,10 +781,10 @@ const Corpus = () => {
       {isPopUpEditDoc && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-lg p-8 bg-white rounded-lg">
-            <h2 className="mb-4 text-2xl font-semibold text-center">Chỉnh Sửa Tài Liệu</h2>
+            <h2 className="mb-4 text-2xl font-semibold text-center">{t("editDocument")}</h2>
             {/* Input tiêu đề */}
             <div className="mb-4">
-              <label className="block mb-2 text-gray-600">Tiêu đề:</label>
+              <label className="block mb-2 text-gray-600">{t("title")}</label>
               <input
                 type="text"
                 value={editTitle}
@@ -790,7 +794,7 @@ const Corpus = () => {
             </div>
             {/* Input nội dung */}
             <div className="mb-4">
-              <label className="block mb-2 text-gray-600">Nội dung:</label>
+              <label className="block mb-2 text-gray-600">{t("content")}:</label>
               <textarea
                 value={editContent}
                 onChange={(e) => setEditContent(e.target.value)}
@@ -805,13 +809,13 @@ const Corpus = () => {
                 onClick={handleCloseEditPopUpDoc}
                 className="px-4 py-2 mr-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300"
               >
-                Hủy
+                {t("cancel")}
               </button>
               <button
                 onClick={handleUpdateDocument}
                 className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
               >
-                Lưu
+                {t("save")}
               </button>
             </div>
           </div>
@@ -821,8 +825,8 @@ const Corpus = () => {
       {isPopUpDeleteDoc && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-lg p-8 bg-white rounded-lg">
-            <h2 className="mb-4 text-2xl font-semibold text-center">Xóa Tài Liệu</h2>
-            <p className="mb-4 text-center">Bạn có chắc chắn muốn xóa tài liệu này?</p>
+            <h2 className="mb-4 text-2xl font-semibold text-center">{t("deleteDocument")}</h2>
+            <p className="mb-4 text-center">{t("confirmDeleteDocument")}</p>
             {/* Hiển thị thông báo lỗi nếu có */}
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
             {/* Nút Hủy và Xóa */}
@@ -831,13 +835,13 @@ const Corpus = () => {
                 onClick={handleCloseDeletePopUpDoc}
                 className="px-4 py-2 mr-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300"
               >
-                Hủy
+                {t("cancel")}
               </button>
               <button
                 onClick={handleDeleteDocument}
                 className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
               >
-                Xóa
+                {t("delete")}
               </button>
             </div>
           </div>
@@ -847,7 +851,9 @@ const Corpus = () => {
       {showContentPopup && popupDocument && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-lg p-8 bg-white rounded-lg">
-            <h2 className="mb-4 text-2xl font-semibold text-center">Nội dung tài liệu: {popupDocument.title}</h2>
+            <h2 className="mb-4 text-2xl font-semibold text-center">
+              {t("documentContent")} {popupDocument.title}
+            </h2>
             {/* Ô chứa nội dung (danh sách câu) có thanh cuộn */}
             <div className="popup-text-container mb-4">
               <div className="popup-text">
@@ -861,7 +867,7 @@ const Corpus = () => {
                 onClick={handleCloseContentPopup}
                 className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
               >
-                Đóng
+                {t("close")}
               </button>
             </div>
           </div>
@@ -871,7 +877,7 @@ const Corpus = () => {
       {showUploadResultPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
           <div className="w-full max-w-md p-8 bg-white rounded-lg">
-            <h2 className="mb-4 text-2xl font-semibold text-center">Kết Quả Tải Lên</h2>
+            <h2 className="mb-4 text-2xl font-semibold text-center">{t("uploadResult")}</h2>
             {/* Render uploadResultMessage như một phần tử React */}
             {uploadResultMessage}
             <div className="flex justify-end">
@@ -879,7 +885,7 @@ const Corpus = () => {
                 onClick={() => setShowUploadResultPopup(false)}
                 className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
               >
-                Đóng
+                {t("close")}
               </button>
             </div>
           </div>
