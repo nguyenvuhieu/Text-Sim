@@ -21,7 +21,6 @@ const Data = () => {
   const [editFirstSentence, setEditFirstSentence] = useState("");
   const [editSecondSentence, setEditSecondSentence] = useState("");
   const [editSimilarity, setEditSimilarity] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedDataGroup, setSelectedDataGroup] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
   const [IsPopUpAddGroup, setIsPopUpAddGroup] = useState(false);
@@ -33,11 +32,8 @@ const Data = () => {
 
   const [newGroupName, setNewGroupName] = useState("");
   const [newGroupScoreType, setNewGroupScoreType] = useState("");
-  const [isChangeButtonVisible, setIsChangeButtonVisible] = useState(false);
-  const [datasetConfig, setDatasetConfig] = useState(null); // State lưu trữ cấu trúc dataset
   const [selectedLanguage, setSelectedLanguage] = useState("ALL"); // Ngôn ngữ mặc định
   const [selectedSimilarity, setSelectedSimilarity] = useState("COS_SIM"); // Loại so sánh mặc định
-  const [selectedModel, setSelectedModel] = useState(""); // Mô hình nhúng mặc định
   const [showExportPopup, setShowExportPopup] = useState(false);
   const [loading, setLoading] = useState(false);
   // Tạo một instance Axios riêng
@@ -368,14 +364,6 @@ const Data = () => {
       setErrorMessage(t("errorDeletingGroup") + error.response.data.detail);
     }
   };
-  const handleDataGroupChangeButton = (selectedGroupId) => {
-    // Tìm groupName tương ứng với selectedGroupId
-    const selectedGroup = datagroups.find((group) => group._id === selectedGroupId);
-    // Cập nhật selectedDataGroup với id và name tương ứng
-    setSelectedDataGroup({ id: selectedGroup._id, name: selectedGroup.name });
-    // Gọi hàm fetchDataSet để lấy dữ liệu tương ứng với nhóm mới được chọn
-    fetchDataSet(selectedGroup._id);
-  };
 
   return (
     <div className="max-w-[1000px] mx-auto my-16 min-h-[800px]">
@@ -405,26 +393,54 @@ const Data = () => {
             </option>
           ))}
         </select>
-        {isChangeButtonVisible && (
-          <button
-            onClick={handleDataGroupChangeButton}
-            className="px-4 py-2 ml-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-          >
-            Thay đổi
+
+        <button
+          class="rounded-lg relative w-36 h-10 cursor-pointer flex items-center border border-blue-500 bg-blue-500 group hover:bg-blue-500 active:bg-blue-500 active:border-blue-500 mr-4 ml-6"
+          onClick={() => setIsPopUpAddGroup(true)}
+        >
+          <span class="text-white font-semibold ml-2 transform group-hover:translate-x-5 transition-all duration-300">
+            {t("addGroup")}
+          </span>
+          <span class="absolute right-0 h-full w-10 rounded-lg bg-blue-500 flex items-center justify-center transform group-hover:translate-x-0 group-hover:w-full transition-all duration-300">
+            <svg
+              class="svg w-8 text-white"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <line x1="12" x2="12" y1="5" y2="19"></line>
+              <line x1="5" x2="19" y1="12" y2="12"></line>
+            </svg>
+          </span>
+        </button>
+        {selectedDataGroup?.id && (
+          <button class="delete-group" type="button" onClick={() => setIsPopUpDelGroup(true)}>
+            <span class="delete-group__text">{t("deleteGroup")}</span>
+            <span class="delete-group__icon">
+              <svg class="svg" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
+                <title></title>
+                <path
+                  d="M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320"
+                  className="delete-group-svg-path"
+                ></path>{" "}
+                <line x1="80" x2="432" y1="112" y2="112" className="delete-group-svg-path"></line>
+                <path
+                  d="M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40"
+                  className="delete-group-svg-path"
+                ></path>
+                <line x1="256" x2="256" y1="176" y2="400" className="delete-group-svg-path"></line>
+                <line x1="184" x2="192" y1="176" y2="400" className="delete-group-svg-path"></line>
+                <line x1="328" x2="320" y1="176" y2="400" className="delete-group-svg-path"></line>
+              </svg>
+            </span>
           </button>
         )}
-        <button
-          onClick={() => setIsPopUpAddGroup(true)}
-          className="px-4 py-2 ml-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-        >
-          {t("addGroup")}
-        </button>
-        <button
-          onClick={() => setIsPopUpDelGroup(true)}
-          className="px-4 py-2 ml-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-        >
-          {t("deleteGroup")}
-        </button>
       </div>
       {!selectedDataGroup?.id && <p className="text-center text-gray-600 mt-4">{t("pleaseSelectGroup")}</p>}
       {selectedDataGroup?.id && (
@@ -515,18 +531,62 @@ const Data = () => {
               <option value="false">False</option>
             </select>
           )}
+
           <button
+            class="rounded-lg relative w-36 h-10 cursor-pointer flex items-center border border-green-500 bg-green-500 group hover:bg-green-500 active:bg-green-500 active:border-green-500 ml-4 mr-4"
             onClick={handleAddData}
-            className="px-4 py-2 mx-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
           >
-            {t("addData")}
+            <span class="text-white font-semibold ml-1 transform group-hover:translate-x-5 transition-all duration-300">
+              {t("addData")}
+            </span>
+            <span class="absolute right-0 h-full w-8 rounded-lg bg-green-500 flex items-center justify-center transform group-hover:translate-x-0 group-hover:w-full transition-all duration-300">
+              <svg
+                class="svg w-8 text-white"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <line x1="12" x2="12" y1="5" y2="19"></line>
+                <line x1="5" x2="19" y1="12" y2="12"></line>
+              </svg>
+            </span>
           </button>
-          <button
+
+          <div
+            className="download-button"
+            data-tooltip={t("numberOfDatasets", { count: datasets.length })}
             onClick={handleExportData}
-            className="px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600"
           >
-            {t("exportData")}
-          </button>
+            <div className="download-button-wrapper">
+              <div className="download-button__text">{t("exportData")}</div>
+              <span className="download-button__icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  role="img"
+                  width="2em"
+                  height="2em"
+                  preserveAspectRatio="xMidYMid meet"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"
+                  ></path>
+                </svg>
+              </span>
+            </div>
+          </div>
         </div>
       )}
       {showTable && selectedDataGroup?.id && (
@@ -558,11 +618,30 @@ const Data = () => {
                         }
                       </td>
                       <td className="task-buttons">
-                        <button className="action-button" onClick={() => handleUpdateClick(index)}>
+                        <button class="edit-button" onClick={() => handleUpdateClick(index)}>
                           {t("edit")}
+                          <svg class="svg" viewBox="0 0 512 512">
+                            <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path>
+                          </svg>
                         </button>
-                        <button className="action-button" onClick={() => handleDeleteClick(index)}>
-                          {t("delete")}
+
+                        <button class="bin-button" onClick={() => handleDeleteClick(index)}>
+                          <svg class="bin-top" viewBox="0 0 39 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <line y1="5" x2="39" y2="5" stroke="white" stroke-width="4"></line>
+                            <line x1="12" y1="1.5" x2="26.0357" y2="1.5" stroke="white" stroke-width="3"></line>
+                          </svg>
+                          <svg class="bin-bottom" viewBox="0 0 33 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <mask id="path-1-inside-1_8_19" fill="white">
+                              <path d="M0 0H33V35C33 37.2091 31.2091 39 29 39H4C1.79086 39 0 37.2091 0 35V0Z"></path>
+                            </mask>
+                            <path
+                              d="M0 0H33H0ZM37 35C37 39.4183 33.4183 43 29 43H4C-0.418278 43 -4 39.4183 -4 35H4H29H37ZM4 43C-0.418278 43 -4 39.4183 -4 35V0H4V35V43ZM37 0V35C37 39.4183 33.4183 43 29 43V35V0H37Z"
+                              fill="white"
+                              mask="url(#path-1-inside-1_8_19)"
+                            ></path>
+                            <path d="M12 6L12 29" stroke="white" stroke-width="4"></path>
+                            <path d="M21 6V29" stroke="white" stroke-width="4"></path>
+                          </svg>
                         </button>
                       </td>
                     </tr>

@@ -48,5 +48,6 @@
   "selectDataGroup": "Chọn nhóm dữ liệu",
   "selectGroup": "--Chọn nhóm--",
   "pleaseSelectGroup": "Vui lòng chọn nhóm dữ liệu muốn hiển thị",
-  "placeholderText-1": "Nhập câu ở đây..."
+  "placeholderText-1": "Nhập câu ở đây...",
+  "numberOfDatasets": "Số lượng dữ liệu: {{count}}"
 }

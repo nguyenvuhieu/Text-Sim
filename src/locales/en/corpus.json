@@ -45,5 +45,6 @@
   "selectDocumentGroup": "Select document group:",
   "selectGroup": "--Select group--",
   "uploadSuccess": "Successfully added documents:",
-  "uploadFail": "Failed to add documents:"
+  "uploadFail": "Failed to add documents:",
+  "numberOfDocuments": "Number of documents: {{count}}"
 }

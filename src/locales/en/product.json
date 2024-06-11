@@ -31,5 +31,6 @@
   "modelActivateFail": "Error activating model {{modelName}}: {{errorMessage}}",
   "vietnamese": "Vietnamese",
   "english": "English",
-  "all": "All"
+  "all": "All",
+  "activatedModel": "Activated model: {{modelName}}, similarity measurement: {{similarity}}"
 }

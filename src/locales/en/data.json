@@ -48,5 +48,6 @@
   "selectDataGroup": "Select data group",
   "selectGroup": "--Select group--",
   "pleaseSelectGroup": "Please select a data group to display",
-  "placeholderText-1": "Type sentences here..."
+  "placeholderText-1": "Type sentences here...",
+  "numberOfDatasets": "Number of datasets: {{count}}"
 }

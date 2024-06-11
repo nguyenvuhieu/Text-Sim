@@ -45,5 +45,6 @@
   "selectDocumentGroup": "Chọn nhóm tài liệu:",
   "selectGroup": "--Chọn nhóm--",
   "uploadSuccess": "Thêm thành công các tài liệu:",
-  "uploadFail": "Thêm thất bại các tài liệu:"
+  "uploadFail": "Thêm thất bại các tài liệu:",
+  "numberOfDocuments": "Số lượng tài liệu: {{count}}"
 }

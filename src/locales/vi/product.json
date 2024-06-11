@@ -30,5 +30,7 @@
   "modelActivateFail": "Lỗi khi kích hoạt mô hình {{modelName}}: {{errorMessage}}",
   "vietnamese": "Tiếng Việt",
   "english": "Tiếng Anh",
-  "all": "Tất cả"
+  "all": "Tất cả",
+
+  "activatedModel": "Đã kích hoạt mô hình: {{modelName}}, độ đo {{similarity}}"
 }

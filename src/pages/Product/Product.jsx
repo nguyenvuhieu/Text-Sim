@@ -447,7 +447,7 @@ const Product = () => {
       const selectedSimilarity = configData.similarities.find((sim) => sim.type === newModel.similarity);
 
       // Tạo mô tả mô hình
-      let description = `Đã kích hoạt mô hình: ${newModel.name}, độ đo ${newModel.similarity}`;
+      let description = t("activatedModel", { modelName: newModel.name, similarity: newModel.similarity });
       if (selectedSimilarity.data_type === "SELECT") {
         description += `, giá trị: ${selectedSimilarity.select_options.join(", ")}`;
       } else if (selectedSimilarity.data_type === "FLOAT") {
