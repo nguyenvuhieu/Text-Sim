@@ -386,3 +386,19 @@ input:checked ~ .slider {
     opacity: 1;
   }
 }
+/* CSS cho thanh cuộn (trong .input-container) */
+.input-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.input-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.input-container::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+.input-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

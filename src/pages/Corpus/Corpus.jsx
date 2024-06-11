@@ -30,7 +30,6 @@ const Corpus = () => {
   const [isPopUpDeleteDoc, setIsPopUpDeleteDoc] = useState(false);
   const [newGroupName, setNewGroupName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [showFullContent, setShowFullContent] = useState(false);
   const [showContentPopup, setShowContentPopup] = useState(false);
   const [popupDocument, setPopupDocument] = useState(null);
   const [showUploadInterface, setShowUploadInterface] = useState(false);
@@ -96,7 +95,7 @@ const Corpus = () => {
     try {
       if (selectedDocGroup && selectedDocGroup.id) {
         // Check if selectedDocGroup is not null
-        const response = await api.get(`${HOST}/corpus/${selectedDocGroup.id}/documents`);
+        const response = await api.get(`${HOST}/corpus/${selectedDocGroup.id}/documents?skip=0&limit=1000`);
         if (response.data && response.data.documents) {
           setDocuments(response.data.documents);
           setShowTable(true); // Hiển thị bảng sau khi fetch
@@ -622,8 +621,8 @@ const Corpus = () => {
       {showTable && selectedDocGroup?.id && (
         <div>
           <h2>{t("documentList")}</h2>
-          <div className="table-container">
-            <table className="data-table">
+          <div className="table-container  ">
+            <table className="data-table ">
               <thead>
                 <tr>
                   <th className="title-column">{t("title")}</th>

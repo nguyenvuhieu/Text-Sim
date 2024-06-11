@@ -12,8 +12,7 @@ import "../Corpus/Corpus";
 //import handleClick from "./onclick";
 
 const MAXIMUM_NUMBER_OF_CHARACTERS = 10000;
-const MODEL_VIE = "paraphrase-multilingual-mpnet-base-v2";
-const MODEL_ENG = "all-MiniLM-L6-v2";
+
 const HOST = "http://127.0.0.1:8000";
 
 const Product = () => {
@@ -199,19 +198,6 @@ const Product = () => {
     Math.cos(angle - Math.PI / 2) * offset,
     Math.sin(angle - Math.PI / 2) * offset
   ];
-
-  const modelsToActivate = [MODEL_VIE, MODEL_ENG];
-
-  const getListModels = async () => {
-    try {
-      const response = await api.get("http://127.0.0.1:8000/model");
-      return response.data.models.map((model) => model.name);
-    } catch (error) {
-      console.error("Error fetching model list:", error);
-      setError("Error fetching model list");
-      return [];
-    }
-  };
 
   const fetchCorpusList = async () => {
     try {
@@ -425,6 +411,7 @@ const Product = () => {
   const handleModelChange = async (event) => {
     const newModelName = event.target.value;
     const newModel = configData.models.find((model) => model.name === newModelName);
+    setError(null);
     setClickbutton(false);
     setSelectedModel(newModel);
 
@@ -1028,22 +1015,19 @@ const Product = () => {
                 </>
               </div>
 
-              <div className="w-full mb-8 border border-gray-200 rounded-lg bg-gray-50">
+              <div className="w-full mb-8 border border-gray-200 rounded-lg bg-gray-50 ">
                 {inputType1 === "text" ? (
-                  <div className="relative p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+                  <div className="relative p-4 rounded-lg bg-gray-50 ">
                     <textarea
                       id="search"
                       rows={8}
-                      className="w-full px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 resize-none focus:ring-0 dark:text-white "
+                      className="w-full px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 resize-none focus:ring-0 input-container "
                       placeholder={t("placeholderText")}
                       required
                       value={inputs1}
                       onChange={handleChangeInput1}
                     />
-                    <label
-                      htmlFor="text"
-                      className="absolute text-xs text-gray-900 opacity-70 right-4 bottom-4 dark:text-gray-300"
-                    >
+                    <label htmlFor="text" className="absolute text-xs text-gray-900 opacity-70 right-4 bottom-4">
                       {numberOfCharacters1} / {MAXIMUM_NUMBER_OF_CHARACTERS}
                     </label>
                   </div>
@@ -1058,7 +1042,7 @@ const Product = () => {
                     />
                     <div>
                       {selectedFileName1 && ( // Chỉ hiển thị khi có tên tệp
-                        <div className="flex items-center justify-between py-2 px-4 bg-gray-100 dark:bg-gray-800 mb-2">
+                        <div className="flex items-center justify-between py-2 px-4 bg-gray-100 mb-2">
                           <span>{selectedFileName1}</span>
                           <button
                             className="text-blue-500 underline hover:text-red-500"
@@ -1078,6 +1062,7 @@ const Product = () => {
             <button
               type="button"
               className={`inline-flex items-center py-2.5 px-4 text-base font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 hover:bg-blue-800 ${
+                !selectedModel ||
                 loadingCompare ||
                 (inputType1 === "text" && (inputs1.length <= 0 || inputs2.length <= 0)) ||
                 (inputType1 === "file" && !file1) || // Kiểm tra file1 null
@@ -1088,10 +1073,11 @@ const Product = () => {
               }`}
               onClick={() => {
                 if (
-                  (inputType1 === "text" && inputs1 && inputs2) ||
-                  (inputType1 === "file" && file1 && inputs2) || // Kiểm tra file1
-                  (inputType2 === "file" && inputs1 && file2) || // Kiểm tra file2
-                  (inputType1 === "file" && inputType2 === "file" && file1 && file2) // Cả 2 đều là file
+                  selectedModel &&
+                  ((inputType1 === "text" && inputs1 && inputs2) ||
+                    (inputType1 === "file" && file1 && inputs2) || // Kiểm tra file1
+                    (inputType2 === "file" && inputs1 && file2) || // Kiểm tra file2
+                    (inputType1 === "file" && inputType2 === "file" && file1 && file2)) // Cả 2 đều là file
                 ) {
                   handleTextSim();
 
@@ -1106,7 +1092,7 @@ const Product = () => {
                 (inputType1 === "file" && !file1) || // Kiểm tra file1 null
                 (inputType2 === "text" && (!inputs1 || !inputs2)) ||
                 (inputType2 === "file" && !file2) // Kiểm tra file2 null
-                  ? "Cần nhập văn bản hoặc chọn tệp"
+                  ? "Cần nhập văn bản, chọn tệp và chọn mô hình"
                   : ""
               }
             >
@@ -1146,7 +1132,7 @@ const Product = () => {
                     <textarea
                       id="search"
                       rows={8}
-                      className="w-full px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 resize-none focus:ring-0 dark:text-white dark:placeholder-gray-400 outline-0"
+                      className="w-full px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 resize-none focus:ring-0 input-container"
                       placeholder={t("placeholderText")}
                       required
                       value={inputs2}
@@ -1156,7 +1142,7 @@ const Product = () => {
                       htmlFor="text"
                       className="absolute text-xs text-gray-900 opacity-70 right-4 bottom-4 dark:text-gray-300"
                     >
-                      {numberOfCharacters1} / {MAXIMUM_NUMBER_OF_CHARACTERS}
+                      {numberOfCharacters2} / {MAXIMUM_NUMBER_OF_CHARACTERS}
                     </label>
                   </div>
                 ) : (
@@ -1217,7 +1203,7 @@ const Product = () => {
                     <textarea
                       id="search"
                       rows={8}
-                      className="w-full px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 resize-none focus:ring-0 dark:text-white dark:placeholder-gray-400 outline-0"
+                      className="w-full px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 resize-none focus:ring-0 input-container"
                       placeholder={t("placeholderText")}
                       required
                       value={inputs3}
@@ -1260,17 +1246,26 @@ const Product = () => {
             <button
               type="button"
               className={`inline-flex items-center py-2.5 px-4 text-base font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 hover:bg-blue-800 ${
-                loadingCompare || (inputType3 === "text" ? inputs3.length <= 0 : !file3) || inputArray.length === 0
+                !selectedModel ||
+                loadingCompare ||
+                (inputType3 === "text" ? inputs3.length <= 0 : !file3) ||
+                inputArray.length === 0
                   ? "cursor-not-allowed"
                   : ""
               }`}
               onClick={() => {
-                handleTextSim_v2();
-                // Tiếp tục với các hành động khác
-                setPairsByFirst([]); // Đảm bảo bạn có setPairsByFirst để sử dụng ở phần hiển thị kết quả
-                setClickbutton(true);
-                setSelectedIdx("");
-                setClickv2(false);
+                if (
+                  selectedModel && // Kiểm tra mô hình đã chọn
+                  ((inputType3 === "text" && inputs3) || (inputType3 === "file" && file3)) && // Kiểm tra input hoặc file đã được chọn
+                  inputArray.length > 0 // Kiểm tra inputArray không rỗng
+                ) {
+                  handleTextSim_v2();
+                  // Tiếp tục với các hành động khác
+                  setPairsByFirst([]);
+                  setClickbutton(true);
+                  setSelectedIdx("");
+                  setClickv2(false);
+                }
               }}
             >
               <svg aria-hidden="true" className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1342,7 +1337,7 @@ const Product = () => {
                     <textarea
                       id="search"
                       rows={8}
-                      className="w-full px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 resize-none focus:ring-0 "
+                      className="w-full px-4 py-2 text-base text-gray-900 bg-gray-50 border-0 resize-none focus:ring-0 input-container"
                       placeholder={t("placeholderText")}
                       required
                       value={inputs4}
@@ -1385,6 +1380,7 @@ const Product = () => {
             <button
               type="button"
               className={`inline-flex items-center py-2.5 px-4 text-base font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 hover:bg-blue-800 ${
+                !selectedModel ||
                 loadingCompare ||
                 (inputType4 === "text" && inputs4.length <= 0) || // Nếu là text thì inputs4 phải có nội dung
                 (inputType4 === "file" && !file4) || // Nếu là file thì file4 phải tồn tại
@@ -1393,11 +1389,17 @@ const Product = () => {
                   : ""
               }`}
               onClick={() => {
-                handleTextSim_v3();
-                setPairsByFirst_v3([]);
-                setClickbutton(true);
-                setSelectedIdx_v3("");
-                setClickv3(false);
+                if (
+                  selectedModel && // Kiểm tra mô hình đã chọn
+                  ((inputType4 === "text" && inputs4) || (inputType4 === "file" && file4)) && // Kiểm tra input hoặc file đã được chọn
+                  selectedCorpusId
+                ) {
+                  handleTextSim_v3();
+                  setPairsByFirst_v3([]);
+                  setClickbutton(true);
+                  setSelectedIdx_v3("");
+                  setClickv3(false);
+                }
               }}
             >
               <svg aria-hidden="true" className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1459,7 +1461,7 @@ const Product = () => {
 
           <div className="mb-20 flex justify-center items-center">
             {loadingCompare ? null : (
-              <div className="mb-17 flex justify-center items-center">
+              <div className=" mb-17 flex justify-center items-center">
                 {loadingCompare
                   ? null
                   : !clickv1
@@ -1475,7 +1477,11 @@ const Product = () => {
                   <div>
                     <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{t("text")} 1</h5>
                     <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                      <div id="scrollableDiv1" style={{ overflow: "auto", maxHeight: "650px" }}>
+                      <div
+                        id="scrollableDiv1"
+                        className="input-container "
+                        style={{ overflow: "auto", maxHeight: "650px" }}
+                      >
                         <pre
                           className="mb-3 font-normal text-gray-700 whitespace-pre-wrap"
                           dangerouslySetInnerHTML={{
@@ -1492,7 +1498,11 @@ const Product = () => {
                   <div>
                     <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{t("text")} 2</h5>
                     <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                      <div id="scrollableDiv2" style={{ overflow: "auto", maxHeight: "650px" }}>
+                      <div
+                        id="scrollableDiv2"
+                        className="input-container "
+                        style={{ overflow: "auto", maxHeight: "650px" }}
+                      >
                         <pre
                           className="mb-3 font-normal text-gray-700 whitespace-pre-wrap"
                           dangerouslySetInnerHTML={{
@@ -1529,15 +1539,15 @@ const Product = () => {
           <div className="mb-20 justify-center items-center">
             <div className="grid grid-cols-6 gap-1 p-1">
               {/* Phần bên trái (Văn bản 1) */}
-              <div className="col-span-3 p-2">
+              <div className="col-span-3 p-2 ">
                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{t("text")} 1</h5>
                 <div
-                  className="border border-gray-200 rounded-lg p-4 bg-gray-50"
+                  className=" border border-gray-200 rounded-lg p-4 bg-gray-50 input-container"
                   style={{ overflow: "auto", maxHeight: "800px" }}
                 >
                   {loadingCompare ? null : (
                     <pre
-                      className="mb-3 font-normal text-gray-700 whitespace-pre-wrap"
+                      className=" mb-3 font-normal text-gray-700 whitespace-pre-wrap"
                       dangerouslySetInnerHTML={{
                         __html: highlightSimilarSentencesv2()
                       }}
@@ -1647,7 +1657,7 @@ const Product = () => {
         data_v3.corpus_documents.some((documentArray) =>
           documentArray.some((document) => document.pairs && document.pairs.length > 0)
         );
-      const similarDocuments = data_v3.corpus_documents.flat().filter((doc) => doc.similarity > 0);
+
       if (!loadingCompare && !error && !hasPairs) {
         return (
           <div className="mb-18 items-center justify-center">
@@ -1655,7 +1665,8 @@ const Product = () => {
           </div>
         );
       }
-
+      if (!data_v3) return;
+      const similarDocuments = data_v3.corpus_documents.flat().filter((doc) => doc.similarity > 0);
       return (
         <div className="mb-20 justify-center items-center">
           <div className="grid grid-cols-6 gap-1 p-1">
@@ -1663,7 +1674,7 @@ const Product = () => {
             <div className="col-span-3 p-2">
               <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{t("text")} 1</h5>
               <div
-                className="border border-gray-200 rounded-lg p-4 bg-gray-50"
+                className="border border-gray-200 rounded-lg p-4 bg-gray-50 input-container"
                 style={{ overflow: "auto", maxHeight: "800px" }}
               >
                 {loadingCompare ? null : (
@@ -1724,12 +1735,12 @@ const Product = () => {
                     </div>
 
                     {/* Danh sách các câu tương đồng (Cột 2) */}
-                    <div className="col-span-2 similar-sentences-list">
-                      <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">
+                    <div className="col-span-2 similar-sentences-list input-container">
+                      <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900 ">
                         {t("similarSentencesList")}
                       </h5>
                       {pairsByFirst_v3.map((result, index) => (
-                        <div key={index} className="mb-2">
+                        <div key={index} className="mb-2 ">
                           <button
                             onClick={() => {
                               handleSelect_v3(index);
@@ -1750,7 +1761,7 @@ const Product = () => {
                         </div>
                       ))}
                     </div>
-                  </div> // grid-cols-6
+                  </div>
                 )}
               </div>
             </div>

@@ -31,7 +31,6 @@ const Data = () => {
   const [isAddDataPopup, setIsAddDataPopup] = useState(false);
 
   const [newGroupName, setNewGroupName] = useState("");
-  const [newGroupScoreType, setNewGroupScoreType] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("ALL"); // Ngôn ngữ mặc định
   const [selectedSimilarity, setSelectedSimilarity] = useState("COS_SIM"); // Loại so sánh mặc định
   const [showExportPopup, setShowExportPopup] = useState(false);
@@ -84,7 +83,7 @@ const Data = () => {
 
   const fetchDataSet = async () => {
     try {
-      const response = await api.get(`${HOST}/dataset/${selectedDataGroup.id}/records`);
+      const response = await api.get(`${HOST}/dataset/${selectedDataGroup.id}/records?skip=0&limit=1000`);
       setDatasets(response.data.documents);
     } catch (error) {
       console.error(t("errorFetchingData"), error);
@@ -303,7 +302,6 @@ const Data = () => {
   const handlePopUpClose = () => {
     setIsPopUpAddGroup(false);
     setNewGroupName("");
-    setNewGroupScoreType("");
     setErrorMessage("");
   };
 

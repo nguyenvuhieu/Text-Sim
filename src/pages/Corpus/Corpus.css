@@ -1,10 +1,28 @@
 /* Định dạng bảng */
 .table-container {
   overflow-x: auto;
-  border-radius: 8px; /* Bo góc */
   border: 1px solid #ccc; /* Viền đậm hơn (2px) và màu đen */
+  scroll-snap-type: y mandatory;
+  overflow: auto;
+  border-radius: 10px;
 }
 
+/* CSS cho thanh cuộn (trong .table-container) */
+.table-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 /* Trong file Corpus.css hoặc trong một thẻ <style> */
 .data-table {
   width: 100%;
@@ -506,4 +524,12 @@
     transform: scale(1);
     opacity: 1;
   }
+}
+
+.scroll-snap-card {
+  height: 150px;
+  width: 250px;
+  scroll-snap-type: y mandatory;
+  overflow: auto;
+  border-radius: 10px;
 }

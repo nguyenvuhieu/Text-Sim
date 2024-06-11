@@ -1,6 +1,6 @@
 {
   "titlePage": "About - TextSim",
   "titleStory": "Story",
-  "descStory": "TextSim is a project",
+  "descStory": "TextSim is a project developed for the Computational Linguistics course at HCMUS. It aims to detect similarities between texts using various natural language processing techniques. The project explores different algorithms, including cosine similarity, Jaccard similarity, and more advanced methods like word embeddings. TextSim provides a user-friendly interface for comparing documents, analyzing plagiarism, and identifying related content.",
   "titleMeet": "Team"
 }

@@ -1,6 +1,6 @@
 {
   "titlePage": "Giới thiệu - TextSim",
   "titleStory": "Câu chuyện",
-  "descStory": "TextSim là một dự án",
+  "descStory": "TextSim là một đồ án được phát triển cho môn Ngôn ngữ học tính toán tại trường ĐH KHTN TP.HCM. Đồ án nhằm mục đích phát hiện sự tương đồng giữa các văn bản bằng cách sử dụng các kỹ thuật xử lý ngôn ngữ tự nhiên khác nhau. Đồ án khám phá các thuật toán khác nhau, bao gồm độ tương tự cosine, độ tương tự Jaccard và các phương pháp nâng cao hơn như nhúng từ (word embeddings). TextSim cung cấp một giao diện thân thiện với người dùng để so sánh tài liệu, phân tích đạo văn và xác định nội dung liên quan.",
   "titleMeet": "Thành viên"
 }
