@@ -8,7 +8,6 @@ import { arc } from "d3-shape";
 import { scaleLinear } from "d3-scale";
 import { format } from "d3-format";
 import "./style.css";
-import "./spin.css";
 import "../Corpus/Corpus";
 //import handleClick from "./onclick";
 
@@ -1010,14 +1009,25 @@ const Product = () => {
           <>
             <div className="flex flex-col justify-center w-2/5 mr-4">
               <div className="flex items-center mb-2">
-                <input
-                  type="checkbox"
-                  checked={inputType1 === "file"}
-                  onChange={() => setInputType1(inputType1 === "text" ? "file" : "text")}
-                  className="mr-2"
-                />
-                <label htmlFor="upload1">{t("uploadFile")}</label>
+                <>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={inputType1 === "file"}
+                      onChange={() => setInputType1(inputType1 === "text" ? "file" : "text")}
+                    />
+                    <div className="slider"></div>
+                    <div className="slider-card">
+                      <div className="slider-card-face slider-card-front"></div>
+                      <div className="slider-card-face slider-card-back"></div>
+                    </div>
+                  </label>
+                  <label htmlFor="upload1" className="ml-2">
+                    {t("uploadFile")}
+                  </label>
+                </>
               </div>
+
               <div className="w-full mb-8 border border-gray-200 rounded-lg bg-gray-50">
                 {inputType1 === "text" ? (
                   <div className="relative p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
@@ -1110,15 +1120,25 @@ const Product = () => {
               </svg>
             </button>
             {/* Input2 */}
-            <div className="flex flex-col justify-center w-2/5 mr-4">
+            <div className="flex flex-col justify-center w-2/5 ml-4">
               <div className="flex items-center mb-2">
-                <input
-                  type="checkbox"
-                  checked={inputType2 === "file"}
-                  onChange={() => setInputType2(inputType2 === "text" ? "file" : "text")}
-                  className="mr-2"
-                />
-                <label htmlFor="upload1">{t("uploadFile")}</label>
+                <>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={inputType2 === "file"}
+                      onChange={() => setInputType2(inputType2 === "text" ? "file" : "text")}
+                    />
+                    <div className="slider"></div>
+                    <div className="slider-card">
+                      <div className="slider-card-face slider-card-front"></div>
+                      <div className="slider-card-face slider-card-back"></div>
+                    </div>
+                  </label>
+                  <label htmlFor="upload2" className="ml-2">
+                    {t("uploadFile")}
+                  </label>
+                </>
               </div>
               <div className="w-full mb-8 border border-gray-200 rounded-lg bg-gray-50">
                 {inputType2 === "text" ? (
@@ -1173,13 +1193,23 @@ const Product = () => {
           <>
             <div className="flex flex-col justify-center w-2/5 mr-4">
               <div className="flex items-center mb-2">
-                <input
-                  type="checkbox"
-                  checked={inputType3 === "file"}
-                  onChange={() => setInputType3(inputType3 === "text" ? "file" : "text")}
-                  className="mr-2"
-                />
-                <label htmlFor="upload1">{t("uploadFile")}</label>
+                <>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={inputType3 === "file"}
+                      onChange={() => setInputType3(inputType3 === "text" ? "file" : "text")}
+                    />
+                    <div className="slider"></div>
+                    <div className="slider-card">
+                      <div className="slider-card-face slider-card-front"></div>
+                      <div className="slider-card-face slider-card-back"></div>
+                    </div>
+                  </label>
+                  <label htmlFor="upload3" className="ml-2">
+                    {t("uploadFile")}
+                  </label>
+                </>
               </div>
               <div className="w-full mb-8 border border-gray-200 rounded-lg bg-gray-50">
                 {inputType3 === "text" ? (
@@ -1288,13 +1318,23 @@ const Product = () => {
             {/* Input 1 */}
             <div className="flex flex-col justify-center w-2/5 mr-4">
               <div className="flex items-center mb-2">
-                <input
-                  type="checkbox"
-                  checked={inputType4 === "file"}
-                  onChange={() => setInputType4(inputType4 === "text" ? "file" : "text")}
-                  className="mr-2"
-                />
-                <label htmlFor="upload1">{t("uploadFile")}</label>
+                <>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={inputType4 === "file"}
+                      onChange={() => setInputType4(inputType4 === "text" ? "file" : "text")}
+                    />
+                    <div className="slider"></div>
+                    <div className="slider-card">
+                      <div className="slider-card-face slider-card-front"></div>
+                      <div className="slider-card-face slider-card-back"></div>
+                    </div>
+                  </label>
+                  <label htmlFor="upload4" className="ml-2">
+                    {t("uploadFile")}
+                  </label>
+                </>
               </div>
               <div className="w-full mb-8 border border-gray-200 rounded-lg bg-gray-50">
                 {inputType4 === "text" ? (
@@ -1830,7 +1870,16 @@ const Product = () => {
       {/* Overlay và spinner */}
       {loading && (
         <div className="loading-overlay">
-          <div className="spinner"></div>
+          <div class="dot-spinner">
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+          </div>
         </div>
       )}
       {loadingCompare && (

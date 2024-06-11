@@ -84,7 +84,7 @@ const Data = () => {
 
   const fetchDataSet = async () => {
     try {
-      const response = await api.get(`${HOST}/dataset/${selectedDataGroup.id}/records?skip=0&limit=10`);
+      const response = await api.get(`${HOST}/dataset/${selectedDataGroup.id}/records`);
       setDatasets(response.data.documents);
     } catch (error) {
       console.error(t("errorFetchingData"), error);
@@ -134,19 +134,6 @@ const Data = () => {
       setSimilarityLabel(e.target.value === "true"); // Chuyển đổi thành boolean
     }
     setErrorMessage(""); // Xóa thông báo lỗi nếu có
-  };
-
-  const handleSimilarityLabelChange1 = (e) => {
-    let value = parseFloat(e.target.value);
-
-    // Kiểm tra nếu giá trị nhập vào không nằm trong khoảng từ 0 đến 1
-    if (isNaN(value) || value < 0) {
-      value = 0;
-    } else if (value > 1) {
-      value = 1;
-    }
-
-    setSimilarityLabel(value);
   };
 
   const handleAddData = async () => {
@@ -886,7 +873,16 @@ const Data = () => {
       {/* Overlay và spinner */}
       {loading && (
         <div className="loading-overlay">
-          <div className="spinner"></div>
+          <div class="dot-spinner">
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+          </div>
         </div>
       )}
     </div>

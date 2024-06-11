@@ -96,7 +96,7 @@ const Corpus = () => {
     try {
       if (selectedDocGroup && selectedDocGroup.id) {
         // Check if selectedDocGroup is not null
-        const response = await api.get(`${HOST}/corpus/${selectedDocGroup.id}/documents?skip=0&limit=10`);
+        const response = await api.get(`${HOST}/corpus/${selectedDocGroup.id}/documents`);
         if (response.data && response.data.documents) {
           setDocuments(response.data.documents);
           setShowTable(true); // Hiển thị bảng sau khi fetch
@@ -425,39 +425,39 @@ const Corpus = () => {
     setShowUploadInterface(event.target.checked); // Cập nhật state
   };
 
-  // Hàm xử lý khi người dùng chọn tệp (di chuyển ra ngoài)
-  const handleFileChange = (event) => {
-    const files = Array.from(event.target.files);
-    const formData = new FormData();
+  // Hàm xử lý khi người dùng chọn tệp
+  const handleFileChange = async (event) => {
+    try {
+      const files = Array.from(event.target.files);
+      const formData = new FormData();
 
-    files.forEach((file) => {
-      formData.append("files", file);
-    });
-
-    fetch(`${HOST}/utility/files`, {
-      method: "POST",
-      body: formData
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(t("networkResponseNotOk"));
-        }
-        return response.json();
-      })
-      .then((data) => {
-        // Tạo mảng mới chứa các object có cấu trúc tương tự dữ liệu từ server
-        const newFiles = data.files.map((file) => ({
-          name: file.file_name,
-          data: file.raw // Ở đây bạn có thể sử dụng raw data hoặc các thuộc tính khác tùy thuộc vào yêu cầu của bạn
-        }));
-
-        // Cập nhật state selectedFiles với mảng mới đã tạo
-        setSelectedFiles(newFiles);
-        setInputArray(newFiles);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
+      files.forEach((file) => {
+        formData.append("files", file);
       });
+
+      const response = await api.post(`${HOST}/utility/files`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data" // Đặt header Content-Type
+        }
+      });
+
+      if (response.status !== 200) {
+        // Xử lý lỗi nếu cần
+        throw new Error(t("networkResponseNotOk"));
+      }
+
+      const data = response.data; // Lấy dữ liệu từ response
+      const newFiles = data.files.map((file) => ({
+        name: file.file_name,
+        data: file.raw // Hoặc sử dụng các thuộc tính khác
+      }));
+
+      setSelectedFiles(newFiles);
+      setInputArray(newFiles);
+    } catch (error) {
+      console.error("Error:", error);
+      // Xử lý lỗi khác nếu cần
+    }
   };
 
   // Hàm xử lý xóa file khỏi danh sách đã chọn
@@ -845,34 +845,55 @@ const Corpus = () => {
 
             {/* Hiển thị thông báo lỗi nếu có */}
             {errorMessage && <div className="mb-3 text-red-500">{errorMessage}</div>}
-
-            {/* Nút Hủy */}
-            <button
-              onClick={handleCloseAddPopUpDoc}
-              className="px-4 py-2 mr-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300"
-            >
-              {t("cancel")}
-            </button>
-
-            {/* Nút Thêm (chỉ hiển thị khi không chọn upload file) */}
-            {!showUploadInterface && (
+            <div className="flex items-center space-x-4">
+              {/* Nút Hủy */}
               <button
-                onClick={handleAddDocument}
-                className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                onClick={handleCloseAddPopUpDoc}
+                className="px-4 py-2 mr-2 text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 "
               >
-                {t("add")}
+                {t("cancel")}
               </button>
-            )}
 
-            {/* Nút thêm từ file (chỉ hiển thị khi checkbox được chọn và có tệp được chọn) */}
-            {showUploadInterface && selectedFiles.length > 0 && (
-              <button
-                onClick={handleAddDocument}
-                className="px-4 py-2 mt-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-              >
-                {t("addFile")}
-              </button>
-            )}
+              {/* Nút Thêm (chỉ hiển thị khi không chọn upload file) */}
+              {!showUploadInterface && (
+                <button
+                  onClick={handleAddDocument}
+                  className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                >
+                  {t("add")}
+                </button>
+              )}
+
+              {/* Nút thêm từ file (chỉ hiển thị khi checkbox được chọn và có tệp được chọn) */}
+              {showUploadInterface && selectedFiles.length > 0 && (
+                <button onClick={handleAddDocument} className="add-file-button">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M13.5 3H12H8C6.34315 3 5 4.34315 5 6V18C5 19.6569 6.34315 21 8 21H11M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19M19 8.625V11.8125"
+                      stroke="#fffffff"
+                      stroke-width="2"
+                    ></path>
+                    <path
+                      d="M17 15V18M17 21V18M17 18H14M17 18H20"
+                      stroke="#fffffff"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </svg>
+                  {t("addFile")}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -993,7 +1014,16 @@ const Corpus = () => {
       {/* Overlay và spinner */}
       {loading && (
         <div className="loading-overlay">
-          <div className="spinner"></div>
+          <div class="dot-spinner">
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+          </div>
         </div>
       )}
     </div>
